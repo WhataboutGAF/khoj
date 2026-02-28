@@ -12,23 +12,23 @@ interface ProductCardProps {
 export function ProductCard({ product }: ProductCardProps) {
   return (
     <Link href={`/product/${product.id}`} className="group block space-y-16">
-      {/* Product Information - Moved ABOVE the image */}
-      <div className="space-y-4 px-4">
-        <div className="flex justify-between items-end gap-12">
-          <h3 className="text-sm md:text-base font-bold text-foreground/90 uppercase tracking-[0.1em] group-hover:text-accent transition-colors leading-tight">
+      {/* Product Information - ABOVE the image, large typography */}
+      <div className="space-y-6 px-4">
+        <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
+          <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-foreground uppercase tracking-[0.1em] group-hover:text-accent transition-colors leading-none">
             {product.name}
           </h3>
-          <span className="text-sm md:text-base font-bold text-foreground whitespace-nowrap">
+          <span className="text-lg md:text-xl font-bold text-accent whitespace-nowrap">
             NPR {product.price.toLocaleString()}
           </span>
         </div>
-        <p className="text-[10px] md:text-xs text-muted uppercase tracking-widest font-medium opacity-80">
-          {product.colors.length} {product.colors.length === 1 ? 'Color' : 'Colors'}
+        <p className="text-[10px] md:text-xs text-muted uppercase tracking-[0.2em] font-bold opacity-70">
+          {product.colors.length} {product.colors.length === 1 ? 'Color' : 'Colors'} • {product.category}
         </p>
       </div>
 
       {/* Product Image */}
-      <div className="relative aspect-[3/4] overflow-hidden rounded-xl bg-secondary border border-white/5 shadow-2xl shadow-black/20">
+      <div className="relative aspect-[3/4] overflow-hidden rounded-xl bg-secondary border border-white/5 shadow-2xl shadow-black/40">
         <Image
           src={product.images[0]}
           alt={product.name}

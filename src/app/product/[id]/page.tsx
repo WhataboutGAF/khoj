@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState, useMemo, useEffect } from 'react'
@@ -37,7 +38,7 @@ export default function ProductDetail() {
     return product.price - appliedCoupon.discount
   }, [product, appliedCoupon])
 
-  if (!product) return <div className="min-h-screen flex items-center justify-center">Product not found</div>
+  if (!product) return <div className="min-h-screen flex items-center justify-center text-muted">Product not found</div>
 
   const handleApplyCoupon = () => {
     const coupon = COUPONS.find(c => c.code.toUpperCase() === couponCode.toUpperCase() && c.isActive)
@@ -105,38 +106,38 @@ URL: ${window.location.href}`
           <div className="space-y-32">
             <div className="space-y-16">
               <div className="flex items-center gap-16">
-                <Badge variant="secondary" className="bg-white/10 text-primary font-bold px-12 py-4 rounded-md">NEW</Badge>
+                <Badge variant="secondary" className="bg-accent/10 text-accent font-bold px-12 py-4 rounded-md">NEW</Badge>
                 <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">{product.category}</span>
               </div>
-              <h1 className="text-4xl font-bold tracking-tight">{product.name}</h1>
+              <h1 className="text-4xl md:text-5xl font-bold tracking-tight">{product.name}</h1>
               <div className="flex items-center gap-16">
-                <p className="text-2xl font-bold text-accent transition-all duration-300">
+                <p className="text-3xl font-bold text-accent transition-all duration-300">
                   NPR {finalPrice.toLocaleString()}
                 </p>
                 {product.originalPrice && (
-                  <p className="text-lg text-muted line-through opacity-50">NPR {product.originalPrice.toLocaleString()}</p>
+                  <p className="text-xl text-muted line-through opacity-50">NPR {product.originalPrice.toLocaleString()}</p>
                 )}
               </div>
-              <p className="text-muted leading-relaxed max-w-lg">{product.description}</p>
+              <p className="text-muted text-lg leading-relaxed max-w-lg">{product.description}</p>
             </div>
 
             {/* Selection */}
-            <div className="space-y-24">
-              <div className="space-y-12">
+            <div className="space-y-32 pt-32 border-t border-white/5">
+              <div className="space-y-16">
                 <div className="flex items-center justify-between">
                   <label className="text-[10px] font-bold uppercase tracking-widest text-muted">Select Size</label>
                   <button className="text-[10px] text-accent font-bold uppercase tracking-widest underline underline-offset-4">Size Guide</button>
                 </div>
-                <div className="flex flex-wrap gap-8">
+                <div className="flex flex-wrap gap-12">
                   {product.sizes.map(size => (
                     <button
                       key={size}
                       onClick={() => setSelectedSize(size)}
                       className={cn(
-                        "w-16 h-12 flex items-center justify-center rounded-lg border text-xs font-bold transition-all",
+                        "h-14 px-24 flex items-center justify-center rounded-xl border text-sm font-bold transition-all",
                         selectedSize === size 
-                          ? "border-accent bg-accent text-background" 
-                          : "border-white/10 hover:border-muted-foreground"
+                          ? "border-accent bg-accent text-background shadow-lg shadow-accent/20" 
+                          : "border-white/10 hover:border-muted-foreground bg-white/5"
                       )}
                     >
                       {size}
@@ -145,7 +146,7 @@ URL: ${window.location.href}`
                 </div>
               </div>
 
-              <div className="space-y-12">
+              <div className="space-y-16">
                 <label className="text-[10px] font-bold uppercase tracking-widest text-muted">Select Color</label>
                 <div className="flex flex-wrap gap-12">
                   {product.colors.map(color => (
@@ -153,10 +154,10 @@ URL: ${window.location.href}`
                       key={color}
                       onClick={() => setSelectedColor(color)}
                       className={cn(
-                        "px-16 py-8 rounded-full border text-[10px] font-bold uppercase tracking-widest transition-all",
+                        "px-20 py-10 rounded-full border text-[10px] font-bold uppercase tracking-widest transition-all",
                         selectedColor === color 
-                          ? "border-accent bg-accent text-background shadow-subtle" 
-                          : "border-white/10 hover:border-muted-foreground"
+                          ? "border-accent bg-accent text-background shadow-subtle shadow-accent/10" 
+                          : "border-white/10 hover:border-muted-foreground bg-white/5"
                       )}
                     >
                       {color}
@@ -167,25 +168,25 @@ URL: ${window.location.href}`
             </div>
 
             {/* Coupons */}
-            <div className="space-y-16 pt-16 border-t border-white/5">
+            <div className="space-y-16 pt-16">
               {!showCouponInput ? (
                 <button 
                   onClick={() => setShowCouponInput(true)}
                   className="text-[10px] font-bold text-accent hover:text-accent/80 transition-colors flex items-center gap-8 uppercase tracking-widest"
                 >
-                  <Plus className="w-4 h-4" /> Add Coupon
+                  <Plus className="w-4 h-4" /> Add Discount Code
                 </button>
               ) : (
                 <div className="space-y-12 animate-in fade-in slide-in-from-top-4 duration-300">
                   <div className="flex gap-8">
                     <Input 
                       placeholder="Enter code" 
-                      className="h-10 border-white/10 bg-secondary focus-visible:ring-accent" 
+                      className="h-11 border-white/10 bg-secondary focus-visible:ring-accent text-sm" 
                       value={couponCode}
                       onChange={(e) => setCouponCode(e.target.value)}
                     />
                     <Button 
-                      className="bg-accent text-background font-bold uppercase text-[10px] tracking-widest px-24 h-10 rounded-lg"
+                      className="bg-accent text-background font-bold uppercase text-[10px] tracking-widest px-24 h-11 rounded-lg"
                       onClick={handleApplyCoupon}
                     >
                       Apply
@@ -212,7 +213,7 @@ URL: ${window.location.href}`
                 onClick={handleOrder}
                 disabled={!selectedSize}
                 className={cn(
-                  "w-full h-14 rounded-lg bg-primary text-background text-sm font-bold uppercase tracking-widest transition-all duration-300",
+                  "w-full h-16 rounded-xl bg-primary text-background text-sm font-bold uppercase tracking-widest transition-all duration-300",
                   !selectedSize ? "opacity-40 grayscale" : "hover:scale-[1.01] active:scale-[0.98] shadow-2xl shadow-accent/20"
                 )}
               >
@@ -231,16 +232,16 @@ URL: ${window.location.href}`
         <div className="container mx-auto max-w-4xl flex items-center justify-between gap-16">
           <div className="flex flex-col">
             <span className="text-[10px] font-bold text-muted uppercase tracking-widest">Price</span>
-            <span className="text-xl font-bold text-accent">NPR {finalPrice.toLocaleString()}</span>
+            <span className="text-2xl font-bold text-accent">NPR {finalPrice.toLocaleString()}</span>
           </div>
           <Button 
             onClick={handleOrder}
             className={cn(
-              "px-32 h-12 rounded-lg bg-primary text-background font-bold uppercase tracking-widest text-[10px] transition-all",
+              "px-32 h-14 rounded-xl bg-primary text-background font-bold uppercase tracking-widest text-xs transition-all",
               !selectedSize && "opacity-40"
             )}
           >
-            {selectedSize ? "Order Now" : "Select Size"}
+            {selectedSize ? "Confirm Order" : "Select Size"}
           </Button>
         </div>
       </div>
