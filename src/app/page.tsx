@@ -1,3 +1,4 @@
+
 "use client"
 
 import Link from 'next/link'
@@ -20,11 +21,11 @@ export default function Home() {
     <div className="min-h-screen bg-background relative overflow-x-hidden">
       <main>
         {/* Hero Section */}
-        <section className="relative h-[75vh] min-h-[600px] flex items-start overflow-hidden pt-128 md:pt-160 bg-[#0B0D12]">
+        <section className="relative min-h-[75vh] flex items-start overflow-hidden pt-128 md:pt-160 pb-96 bg-[#0B0D12]">
           {/* Background Radial Gradient behind model */}
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_40%,rgba(17,21,34,1)_0%,rgba(11,13,18,1)_100%)] -z-10" />
           
-          <div className="container mx-auto px-16 h-full relative z-20">
+          <div className="container mx-auto px-16 relative z-20">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-24 h-full">
               {/* Left Content: 6 Columns - Elevated z-index to prevent clipping */}
               <div className="col-span-1 md:col-span-6 space-y-32 relative z-30">
@@ -51,7 +52,7 @@ export default function Home() {
               </div>
 
               {/* Right Content: 6 Columns (Model Image) */}
-              <div className="hidden md:block col-span-6 relative h-full z-10">
+              <div className="hidden md:block col-span-6 relative z-10">
                 <div className="absolute top-0 right-0 w-[110%] h-[120%] -mr-48">
                   <Image
                     src={modelImage}
