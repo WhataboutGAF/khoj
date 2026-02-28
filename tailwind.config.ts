@@ -15,6 +15,10 @@ export default {
         '24': '24px',
         '32': '32px',
         '48': '48px',
+        '64': '64px',
+        '96': '96px',
+        '128': '128px',
+        '160': '160px',
       },
       fontFamily: {
         body: ['Inter', 'sans-serif'],
