@@ -1,3 +1,34 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero-1",
+      "description": "Minimalist home lifestyle",
+      "imageUrl": "https://images.unsplash.com/photo-1561634343-3a2787687046?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxsaWZlc3R5bGUlMjBtaW5pbWFsfGVufDB8fHx8MTc3MjI2NjcwOXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "lifestyle minimal"
+    },
+    {
+      "id": "prod-1",
+      "description": "Premium Cotton Tee - Black",
+      "imageUrl": "https://images.unsplash.com/photo-1628068311627-0f5abce65050?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxmYXNoaW9uJTIwdC1zaGlydHxlbnwwfHx8fDE3NzIyNjY3MDl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "fashion t-shirt"
+    },
+    {
+      "id": "prod-2",
+      "description": "Ceramic Essential Set",
+      "imageUrl": "https://images.unsplash.com/photo-1623682522867-ef176aa9c883?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjZXJhbWljJTIwcG90dGVyeXxlbnwwfHx8fDE3NzIyNjY3MDl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "ceramic pottery"
+    },
+    {
+      "id": "prod-3",
+      "description": "Leather Carry Case",
+      "imageUrl": "https://images.unsplash.com/photo-1689844496310-b261f7602bc2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxsZWF0aGVyJTIwZ29vZHN8ZW58MHx8fHwxNzcyMjY2NzA5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "leather goods"
+    },
+    {
+      "id": "prod-4",
+      "description": "Linen Work Shirt",
+      "imageUrl": "https://images.unsplash.com/photo-1591357037205-166318b51afd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxsaW5lbiUyMHNoaXJ0fGVufDB8fHx8MTc3MjE3MTA0MXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "linen shirt"
+    }
+  ]
 }
