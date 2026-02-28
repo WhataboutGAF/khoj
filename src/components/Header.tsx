@@ -1,7 +1,7 @@
 "use client"
 
 import Link from 'next/link'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { Search, X, Menu } from 'lucide-react'
 import { Button } from './ui/button'
@@ -18,6 +18,7 @@ export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  const searchInputRef = useRef<HTMLInputElement>(null)
   const pathname = usePathname()
   const router = useRouter()
 
@@ -28,6 +29,15 @@ export function Header() {
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  useEffect(() => {
+    if (isSearchOpen && searchInputRef.current) {
+      const timer = setTimeout(() => {
+        searchInputRef.current?.focus()
+      }, 50)
+      return () => clearTimeout(timer)
+    }
+  }, [isSearchOpen])
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -141,7 +151,7 @@ export function Header() {
             <form onSubmit={handleSearch} className="w-full relative">
               <Search className="absolute left-0 top-1/2 -translate-y-1/2 w-5 h-5 text-muted" />
               <Input 
-                autoFocus={isSearchOpen}
+                ref={searchInputRef}
                 placeholder="Search products..." 
                 className="w-full bg-transparent border-none text-xl md:text-2xl h-16 pl-32 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-muted/30 text-foreground"
                 value={searchQuery}

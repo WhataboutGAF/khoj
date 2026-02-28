@@ -18,9 +18,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background relative overflow-x-hidden">
-      {/* Global Grain Overlay */}
-      <div className="fixed inset-0 z-[100] grain-overlay opacity-[0.03] pointer-events-none" />
-      
       <main>
         {/* Hero Section */}
         <section className="relative h-[75vh] min-h-[600px] flex items-start overflow-hidden pt-[128px] md:pt-[160px] bg-[#0B0D12]">

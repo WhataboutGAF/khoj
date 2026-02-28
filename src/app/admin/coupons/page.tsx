@@ -36,13 +36,13 @@ export default function AdminCoupons() {
       <div className="flex items-center gap-16">
         <div className="relative flex-1 max-w-md">
           <Search className="absolute left-12 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
-          <Input placeholder="Search codes..." className="pl-36 bg-white border-none shadow-subtle h-11" />
+          <Input placeholder="Search codes..." className="pl-36 bg-card border-none shadow-subtle h-11" />
         </div>
       </div>
 
-      <Card className="border-none shadow-subtle overflow-hidden">
+      <Card className="border-none shadow-subtle overflow-hidden bg-card">
         <Table>
-          <TableHeader className="bg-white border-b border-border">
+          <TableHeader className="bg-card border-b border-border">
             <TableRow>
               <TableHead className="font-bold uppercase text-xs tracking-wider">Code</TableHead>
               <TableHead className="font-bold uppercase text-xs tracking-wider">Type</TableHead>
@@ -52,9 +52,9 @@ export default function AdminCoupons() {
               <TableHead className="text-right font-bold uppercase text-xs tracking-wider">Actions</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody className="bg-white">
+          <TableBody className="bg-card">
             {coupons.map((coupon) => (
-              <TableRow key={coupon.id} className="hover:bg-secondary/30 transition-colors">
+              <TableRow key={coupon.id} className="hover:bg-secondary/30 transition-colors border-border">
                 <TableCell className="font-bold text-primary">{coupon.code}</TableCell>
                 <TableCell className="text-xs uppercase text-muted font-semibold">{coupon.type}</TableCell>
                 <TableCell className="font-semibold">

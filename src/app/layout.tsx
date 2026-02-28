@@ -21,6 +21,7 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased bg-background text-foreground">
+        <div className="fixed inset-0 z-[100] grain-overlay opacity-[0.03] pointer-events-none" />
         <Header />
         {children}
         <Toaster />
