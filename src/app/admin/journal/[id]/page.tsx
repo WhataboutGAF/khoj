@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState, useEffect } from 'react'
@@ -10,9 +9,9 @@ import { Textarea } from '@/components/ui/textarea'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import { Card } from '@/components/ui/card'
-import { useFirestore, useDoc } from '@/firebase'
-import { setDocumentNonBlocking, deleteDocumentNonBlocking } from '@/firebase/non-blocking-updates'
-import { doc } from 'firebase/firestore'
+import { useFirestore, useDoc, useMemoFirebase } from '@/firebase'
+import { setDocumentNonBlocking } from '@/firebase/non-blocking-updates'
+import { doc, collection } from 'firebase/firestore'
 import Link from 'next/link'
 
 export default function PostForm() {
@@ -21,7 +20,13 @@ export default function PostForm() {
   const db = useFirestore()
   const isNew = id === 'new'
 
-  const { data: postData, isLoading } = useDoc(isNew ? null : doc(db!, 'posts', id as string))
+  // Properly memoize the document reference to avoid hydration/render loop issues
+  const postRef = useMemoFirebase(() => {
+    if (!db || isNew || !id) return null
+    return doc(db, 'posts', id as string)
+  }, [db, isNew, id])
+
+  const { data: postData, isLoading } = useDoc(postRef)
 
   const [form, setForm] = useState({
     title: '',
@@ -69,8 +74,10 @@ export default function PostForm() {
 
   const handleSave = () => {
     if (!db) return
-    const postId = isNew ? doc(collection(db, 'posts')).id : id as string
-    const docRef = doc(db, 'posts', postId)
+    
+    // Create reference for existing post or generate a new one
+    const targetId = isNew ? doc(collection(db, 'posts')).id : id as string
+    const docRef = doc(db, 'posts', targetId)
     
     const payload = {
       ...form,
@@ -207,8 +214,4 @@ export default function PostForm() {
       </div>
     </div>
   )
-}
-
-function collection(db: any, name: string) {
-  return { id: Math.random().toString(36).substr(2, 9) }
 }

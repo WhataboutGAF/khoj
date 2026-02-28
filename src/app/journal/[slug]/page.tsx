@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useParams } from 'next/navigation'
@@ -7,6 +6,7 @@ import { useFirestore, useCollection, useMemoFirebase } from '@/firebase'
 import { collection, query, where, limit } from 'firebase/firestore'
 import { Post } from '@/lib/types'
 import { Loader2, ArrowLeft } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 
 export default function PostDetailPage() {
@@ -37,7 +37,7 @@ export default function PostDetailPage() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center text-center space-y-24">
         <h1 className="text-3xl font-bold">Entry not found</h1>
-        <Button asChild variant="outline">
+        <Button asChild variant="outline" className="border-white/10 bg-white/5 rounded-xl h-12 flex items-center gap-8 font-bold uppercase text-[10px] tracking-widest shadow-xl">
           <Link href="/journal">Back to Journal</Link>
         </Button>
       </div>
@@ -45,7 +45,7 @@ export default function PostDetailPage() {
   }
 
   return (
-    <main className="min-h-screen pt-128 pb-160 px-16 bg-background">
+    <main className="min-h-screen pt-160 pb-160 px-16 bg-background">
       <article className="container mx-auto max-w-[720px] space-y-64">
         <header className="space-y-32">
           <Link 
@@ -97,13 +97,5 @@ export default function PostDetailPage() {
       
       <div className="fixed inset-0 -z-10 bg-[radial-gradient(circle_at_center,rgba(84,169,224,0.03)_0%,transparent_70%)]" />
     </main>
-  )
-}
-
-function Button({ asChild, variant, children, className }: any) {
-  return (
-    <button className={className}>
-      {children}
-    </button>
   )
 }
