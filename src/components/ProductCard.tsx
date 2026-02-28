@@ -13,14 +13,21 @@ export function ProductCard({ product }: ProductCardProps) {
   return (
     <Link href={`/product/${product.id}`} className="group block space-y-16">
       {/* Product Information - ABOVE the image, large typography */}
-      <div className="space-y-6 px-4">
-        <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
-          <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-foreground uppercase tracking-[0.1em] group-hover:text-accent transition-colors leading-none">
+      <div className="space-y-8 px-4">
+        <div className="flex flex-col gap-4">
+          <h3 className="text-xl md:text-2xl lg:text-3xl font-bold text-foreground uppercase tracking-tight group-hover:text-accent transition-colors leading-[1.1]">
             {product.name}
           </h3>
-          <span className="text-lg md:text-xl font-bold text-accent whitespace-nowrap">
-            NPR {product.price.toLocaleString()}
-          </span>
+          <div className="flex items-center gap-12">
+            <span className="text-lg md:text-xl font-bold text-accent">
+              NPR {product.price.toLocaleString()}
+            </span>
+            {product.originalPrice && (
+              <span className="text-sm text-muted line-through opacity-40">
+                {product.originalPrice.toLocaleString()}
+              </span>
+            )}
+          </div>
         </div>
         <p className="text-[10px] md:text-xs text-muted uppercase tracking-[0.2em] font-bold opacity-70">
           {product.colors.length} {product.colors.length === 1 ? 'Color' : 'Colors'} • {product.category}
