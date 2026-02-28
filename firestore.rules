@@ -1,0 +1,103 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * CORE PHILOSOPHY:
+     * This ruleset implements a robust Role-Based Access Control (RBAC) system for a retail storefront.
+     * While data shapes are flexible to support rapid prototyping, authorization is strictly enforced.
+     *
+     * DATA STRUCTURE:
+     * 1. /roles_admin/{userId}: A registry of administrative users.
+     * 2. /products/{productId}: Publicly viewable inventory, manageable only by admins.
+     * 3. /collections/{collectionId}: Publicly viewable groupings of products, manageable only by admins.
+     * 4. /coupons/{couponId}: Restricted discount data, manageable only by admins.
+     *
+     * KEY SECURITY DECISIONS:
+     * - Authorization Independence: Admin status is determined by the existence of a document in the 
+     *   /roles_admin collection, preventing complex nested logic.
+     * - Public Read/Admin Write: Catalog data (products/collections) is open for public consumption 
+     *   to allow SEO and guest browsing, but strictly protected from unauthorized modification.
+     * - Relational Integrity: On creation, we ensure documents are correctly linked where necessary,
+     *   but we do not enforce full schema validation during this prototyping phase.
+     */
+
+    // --- Helper Functions ---
+
+    /** @description Checks if the user is authenticated with Firebase Auth. */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /** @description Checks if the authenticated user's UID exists in the admin roles collection. */
+    function isAdmin() {
+      return isSignedIn() && exists(/databases/$(database)/documents/roles_admin/$(request.auth.uid));
+    }
+
+    /** @description Checks if the user is the owner of the document based on the path UID. */
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    /** @description Combined check for admin status and document existence for destructive operations. */
+    function isAdminAndResourceExists() {
+      return isAdmin() && resource != null;
+    }
+
+    // --- Collection Rules ---
+
+    /**
+     * @description Administrative role registry. Determines global write permissions.
+     * @path /roles_admin/{userId}
+     * @allow (get) Any authenticated user can check their own admin status.
+     * @deny (create) Non-admin users cannot promote themselves to admin.
+     * @principle Authorization Independence using a dedicated roles collection.
+     */
+    match /roles_admin/{userId} {
+      allow get: if isOwner(userId) || isAdmin();
+      allow list: if isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+
+    /**
+     * @description Product catalog documents.
+     * @path /products/{productId}
+     * @allow (list) Public users can browse all products.
+     * @allow (update) Authenticated admins can modify product details (price, images).
+     * @deny (delete) Unauthenticated users cannot remove products.
+     * @principle Public Read with Admin-Only Writes.
+     */
+    match /products/{productId} {
+      allow get, list: if true;
+      allow create: if isAdmin();
+      allow update, delete: if isAdminAndResourceExists();
+    }
+
+    /**
+     * @description Product collections for organization.
+     * @path /collections/{collectionId}
+     * @allow (get) Anyone can view collection details.
+     * @deny (update) Non-admin users cannot change collection names.
+     * @principle Resource-based access control restricted to authorized staff.
+     */
+    match /collections/{collectionId} {
+      allow get, list: if true;
+      allow create: if isAdmin();
+      allow update, delete: if isAdminAndResourceExists();
+    }
+
+    /**
+     * @description Discount coupons.
+     * @path /coupons/{couponId}
+     * @allow (get) Anyone can check a specific coupon (e.g., during checkout).
+     * @deny (list) Public users cannot browse/scrape the full list of available coupons.
+     * @principle Restricted list access to prevent coupon harvesting.
+     */
+    match /coupons/{couponId} {
+      allow get: if true;
+      allow list: if isAdmin();
+      allow create: if isAdmin();
+      allow update, delete: if isAdminAndResourceExists();
+    }
+  }
+}

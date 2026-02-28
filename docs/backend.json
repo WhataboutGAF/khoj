@@ -1,0 +1,159 @@
+{
+  "entities": {
+    "Product": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Product",
+      "type": "object",
+      "description": "Represents a single product available for purchase in the KHOJ store, including its details, pricing, and available options.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Product entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the product."
+        },
+        "description": {
+          "type": "string",
+          "description": "A detailed description of the product."
+        },
+        "basePrice": {
+          "type": "number",
+          "description": "The base price of the product before any discounts or coupons are applied."
+        },
+        "imageUrls": {
+          "type": "array",
+          "description": "An array of URLs pointing to images of the product, typically hosted on Supabase Storage.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "isVisible": {
+          "type": "boolean",
+          "description": "Indicates whether the product is currently visible and available to customers on the storefront."
+        },
+        "availableSizes": {
+          "type": "array",
+          "description": "An array of strings representing the available sizes for this product (e.g., 'S', 'M', 'L', 'XL').",
+          "items": {
+            "type": "string"
+          }
+        },
+        "availableColors": {
+          "type": "array",
+          "description": "An optional array of strings representing the available colors for this product (e.g., 'Red', 'Blue', 'Black').",
+          "items": {
+            "type": "string"
+          }
+        },
+        "collectionId": {
+          "type": "string",
+          "description": "Reference to the Collection entity this product belongs to. (Relationship: Collection 1:N Product)"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description",
+        "basePrice",
+        "imageUrls",
+        "isVisible",
+        "availableSizes",
+        "collectionId"
+      ]
+    },
+    "Collection": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Collection",
+      "type": "object",
+      "description": "Represents a logical grouping of products, used for navigation and organization on the 'Shop' page.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Collection entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the product collection (e.g., 'Summer Collection', 'New Arrivals')."
+        },
+        "description": {
+          "type": "string",
+          "description": "An optional description for the collection."
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ]
+    },
+    "Coupon": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Coupon",
+      "type": "object",
+      "description": "Represents a discount coupon that can be applied to orders, including its code, type, value, and validity period.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Coupon entity."
+        },
+        "code": {
+          "type": "string",
+          "description": "The actual coupon code that users enter (e.g., 'SAVE10', 'FREESHIP')."
+        },
+        "type": {
+          "type": "string",
+          "description": "The type of discount offered by the coupon (e.g., 'percentage' for a percent off, 'flat' for a fixed amount off)."
+        },
+        "value": {
+          "type": "number",
+          "description": "The value of the discount. For 'percentage' type, this is the percentage (e.g., 10 for 10%). For 'flat' type, this is the fixed amount (e.g., 5 for $5 off)."
+        },
+        "isActive": {
+          "type": "boolean",
+          "description": "A flag indicating whether the coupon is currently active and can be used by customers."
+        },
+        "expiryDate": {
+          "type": "string",
+          "description": "The date and time when the coupon expires, after which it can no longer be used.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "code",
+        "type",
+        "value",
+        "isActive",
+        "expiryDate"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/roles_admin/{userId}",
+        "definition": {
+          "entityName": "AdminRole",
+          "schema": {
+            "$ref": "#/backend/entities/AdminRole"
+          },
+          "description": "This collection stores the Firebase Authentication UIDs of users who have administrative privileges. The existence of a document for a given UID signifies that the user is an administrator. This ensures global role-based access control (DBAC) within Firestore, adhering to authorization independence by allowing direct checks against `request.auth.uid`.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The Firebase Authentication UID of the user who is an administrator. This ID is used as the document ID."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore data structure is designed to be lean, primarily focusing on authorization and global roles, as the core application data (Products, Collections, Coupons) is explicitly designated to reside within Supabase, with its security managed by Supabase RLS policies. This prevents data duplication and synchronization issues between two distinct database systems.\n\n**Authorization Independence:** The key to secure and debuggable Firestore rules lies in authorization independence. For global administration roles, this is achieved through a dedicated top-level collection: `/roles_admin/{userId}`. An administrator's role is determined solely by the *existence* of a document in this collection whose ID matches their Firebase Authentication UID (`request.auth.uid`). This eliminates the need for `get()` operations within security rules to check for roles, thereby supporting atomic operations and significantly simplifying rule logic. Rules can directly check `exists(/databases/$(database)/documents/roles_admin/$(request.auth.uid))` for admin access, ensuring that authorization is not dependent on parent document attributes or complex lookups.\n\n**Querying for Authorized Paths (QAPs):** The `/roles_admin` collection naturally supports QAPs. Each document in this collection represents a single administrator. If a user has `list` permission on this collection (likely restricted to other administrators or specific backend services), all documents returned will represent valid administrators. There is no mixing of different security postures within this collection (e.g., public vs. private data), making `list` operations inherently secure and non-filtering. This design aligns with the principle that security rules should grant or deny access to entire sets of documents, not filter results.\n\nThe user's specific request for an admin access page at `/justvibing` with a password (`KHOJ@2082`) is a front-end routing and authentication concern. For a production system, it's critical that actual user authentication for admin access is handled by a robust system like Firebase Authentication (which is enabled per the provided auth info) or Supabase Authentication (as mentioned for Supabase RLS), rather than a static password. Once a user is authenticated via Firebase Auth, their UID can then be checked against the `/roles_admin` Firestore collection to grant or deny access to Firestore-related resources or to determine their role for accessing Supabase-managed data (via a backend service that verifies Firebase ID tokens and then interacts with Supabase)."
+  }
+}
