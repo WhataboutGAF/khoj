@@ -2,6 +2,7 @@ import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
 
 export const metadata: Metadata = {
   title: 'KHOJ | Premium Essentials',
@@ -23,7 +24,12 @@ export default function RootLayout({
       <body className="font-body antialiased bg-background text-foreground">
         <div className="fixed inset-0 z-[100] grain-overlay opacity-[0.03] pointer-events-none" />
         <Header />
-        {children}
+        <div className="flex flex-col min-h-screen">
+          <div className="flex-grow">
+            {children}
+          </div>
+          <Footer />
+        </div>
         <Toaster />
       </body>
     </html>

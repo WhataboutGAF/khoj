@@ -20,7 +20,7 @@ export default function Home() {
     <div className="min-h-screen bg-background relative overflow-x-hidden">
       <main>
         {/* Hero Section */}
-        <section className="relative h-[75vh] min-h-[600px] flex items-start overflow-hidden pt-[128px] md:pt-[160px] bg-[#0B0D12]">
+        <section className="relative h-[75vh] min-h-[600px] flex items-start overflow-hidden pt-128 md:pt-160 bg-[#0B0D12]">
           {/* Background Radial Gradient behind model */}
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_40%,rgba(17,21,34,1)_0%,rgba(11,13,18,1)_100%)] -z-10" />
           
@@ -70,7 +70,7 @@ export default function Home() {
         </section>
 
         {/* Featured Products */}
-        <section className="py-[96px] container mx-auto px-16 relative z-10">
+        <section className="py-96 container mx-auto px-16 relative z-10">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-48 gap-16">
             <div className="space-y-8">
               <h2 className="text-3xl font-bold tracking-tight">Structured Series</h2>
@@ -94,40 +94,6 @@ export default function Home() {
           </div>
         </section>
       </main>
-      
-      <footer className="bg-[#0B0D12] py-[96px] border-t border-white/5">
-        <div className="container mx-auto px-16 grid grid-cols-2 md:grid-cols-4 gap-48">
-          <div className="col-span-2 md:col-span-1 space-y-24">
-            <h3 className="text-lg font-bold tracking-tighter uppercase">KHOJ</h3>
-            <p className="text-sm text-muted leading-relaxed">Redefining modern staples through technical precision and minimal form.</p>
-          </div>
-          <div className="space-y-16">
-            <h4 className="text-[10px] font-bold uppercase tracking-widest text-muted">Navigate</h4>
-            <ul className="space-y-12 text-sm">
-              <li><Link href="/shop" className="hover:text-accent transition-colors">Catalogue</Link></li>
-              <li><Link href="/collections" className="hover:text-accent transition-colors">Archives</Link></li>
-              <li><Link href="/journal" className="hover:text-accent transition-colors">Journal</Link></li>
-            </ul>
-          </div>
-          <div className="space-y-16">
-            <h4 className="text-[10px] font-bold uppercase tracking-widest text-muted">Legal</h4>
-            <ul className="space-y-12 text-sm">
-              <li><Link href="/shipping" className="hover:text-accent transition-colors">Terms</Link></li>
-              <li><Link href="/returns" className="hover:text-accent transition-colors">Privacy</Link></li>
-            </ul>
-          </div>
-          <div className="space-y-16">
-            <h4 className="text-[10px] font-bold uppercase tracking-widest text-muted">Connect</h4>
-            <ul className="space-y-12 text-sm">
-              <li><Link href="#" className="hover:text-accent transition-colors">Instagram</Link></li>
-              <li><Link href="#" className="hover:text-accent transition-colors">Twitter</Link></li>
-            </ul>
-          </div>
-        </div>
-        <div className="container mx-auto px-16 mt-64 pt-32 border-t border-white/5 text-[10px] uppercase tracking-widest text-muted/60">
-          © {new Date().getFullYear()} KHOJ STUDIO. ALL RIGHTS RESERVED.
-        </div>
-      </footer>
     </div>
   )
 }
