@@ -4,26 +4,27 @@
 
 @layer base {
   :root {
-    --background: 240 10% 98.5%;
-    --foreground: 240 6% 11%;
-    --card: 0 0% 100%;
-    --card-foreground: 240 6% 11%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 6% 11%;
-    --primary: 240 6% 22%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 240 5% 96%;
-    --secondary-foreground: 240 6% 22%;
-    --muted: 240 3% 44%;
-    --muted-foreground: 240 3% 44%;
-    --accent: 203 70% 60%;
-    --accent-foreground: 0 0% 100%;
+    /* Custom Dark Theme HSL Values */
+    --background: 225 24% 6%;    /* #0B0D12 */
+    --foreground: 225 24% 94%;   /* #EDEFF4 */
+    --card: 225 34% 10%;         /* #111522 */
+    --card-foreground: 225 24% 94%;
+    --popover: 225 34% 10%;
+    --popover-foreground: 225 24% 94%;
+    --primary: 225 24% 94%;
+    --primary-foreground: 225 24% 6%;
+    --secondary: 225 34% 10%;
+    --secondary-foreground: 225 24% 94%;
+    --muted: 225 13% 69%;        /* #A7ADBB */
+    --muted-foreground: 225 13% 69%;
+    --accent: 203 71% 61%;       /* #54A9E0 */
+    --accent-foreground: 225 24% 6%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 5% 91%;
-    --input: 240 5% 91%;
-    --ring: 240 6% 22%;
-    --radius: 0.75rem;
+    --border: 225 20% 15%;
+    --input: 225 20% 15%;
+    --ring: 203 71% 61%;
+    --radius: 12px;
   }
 }
 
@@ -40,8 +41,8 @@
 }
 
 .premium-blur {
-  backdrop-filter: blur(12px);
-  background-color: rgba(249, 249, 250, 0.8);
+  backdrop-filter: blur(16px);
+  background-color: rgba(11, 13, 18, 0.8);
 }
 
 .no-scrollbar::-webkit-scrollbar {
