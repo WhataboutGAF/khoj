@@ -65,7 +65,6 @@ export function Header() {
   const navLinks = [
     { name: 'Shop', href: '/shop', activeMatch: ['/shop', '/product'] },
     { name: 'Collections', href: '/collections', activeMatch: ['/collections'] },
-    { name: 'Journal', href: '/journal', activeMatch: ['/journal'] },
   ]
 
   const isActive = (link: typeof navLinks[0]) => {

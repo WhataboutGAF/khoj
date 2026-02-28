@@ -12,13 +12,16 @@ import {
   Users, 
   LogOut,
   ChevronRight,
-  Plus
+  Plus,
+  FileText
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { cn } from '@/lib/utils'
 
 export default function AdminDashboard() {
   const router = useRouter()
+  const pathname = typeof window !== 'undefined' ? window.location.pathname : ''
 
   useEffect(() => {
     const isAdmin = sessionStorage.getItem('is_khoj_admin')
@@ -32,6 +35,13 @@ export default function AdminDashboard() {
     router.push('/justvibing')
   }
 
+  const links = [
+    { name: 'Overview', href: '/admin/dashboard', icon: BarChart3 },
+    { name: 'Products', href: '/admin/products', icon: Package },
+    { name: 'Coupons', href: '/admin/coupons', icon: Tag },
+    { name: 'Journal', href: '/admin/journal', icon: FileText },
+  ]
+
   return (
     <div className="min-h-screen bg-background flex flex-col md:flex-row">
       {/* Sidebar */}
@@ -43,18 +53,20 @@ export default function AdminDashboard() {
         </div>
         
         <nav className="flex-1 space-y-4">
-          <Link href="/admin/dashboard" className="flex items-center gap-12 px-12 py-10 bg-accent/10 text-accent rounded-lg text-xs font-bold uppercase tracking-widest">
-            <BarChart3 className="w-4 h-4" /> Overview
-          </Link>
-          <Link href="/admin/products" className="flex items-center gap-12 px-12 py-10 text-muted hover:text-foreground hover:bg-white/5 rounded-lg text-xs font-bold uppercase tracking-widest transition-all">
-            <Package className="w-4 h-4" /> Products
-          </Link>
-          <Link href="/admin/coupons" className="flex items-center gap-12 px-12 py-10 text-muted hover:text-foreground hover:bg-white/5 rounded-lg text-xs font-bold uppercase tracking-widest transition-all">
-            <Tag className="w-4 h-4" /> Coupons
-          </Link>
-          <Link href="#" className="flex items-center gap-12 px-12 py-10 text-muted hover:text-foreground hover:bg-white/5 rounded-lg text-xs font-bold uppercase tracking-widest transition-all">
-            <Users className="w-4 h-4" /> Customers
-          </Link>
+          {links.map((link) => (
+            <Link 
+              key={link.name} 
+              href={link.href} 
+              className={cn(
+                "flex items-center gap-12 px-12 py-10 rounded-lg text-xs font-bold uppercase tracking-widest transition-all",
+                pathname === link.href 
+                  ? "bg-accent/10 text-accent" 
+                  : "text-muted hover:text-foreground hover:bg-white/5"
+              )}
+            >
+              <link.icon className="w-4 h-4" /> {link.name}
+            </Link>
+          ))}
         </nav>
 
         <div className="pt-24 border-t border-white/5">
@@ -75,11 +87,18 @@ export default function AdminDashboard() {
             <h1 className="text-3xl font-bold tracking-tight">Dashboard Overview</h1>
             <p className="text-muted text-sm mt-4">Command center for your storefront operations.</p>
           </div>
-          <Button asChild className="bg-accent text-background rounded-xl px-24 h-12 flex items-center gap-8 font-bold uppercase text-[10px] tracking-widest shadow-lg shadow-accent/10">
-            <Link href="/admin/products">
-              <Plus className="w-4 h-4" /> New Piece
-            </Link>
-          </Button>
+          <div className="flex gap-12">
+            <Button asChild variant="outline" className="border-white/10 bg-white/5 rounded-xl px-16 h-12 flex items-center gap-8 font-bold uppercase text-[10px] tracking-widest">
+              <Link href="/admin/journal/new">
+                <FileText className="w-4 h-4" /> New Post
+              </Link>
+            </Button>
+            <Button asChild className="bg-accent text-background rounded-xl px-24 h-12 flex items-center gap-8 font-bold uppercase text-[10px] tracking-widest shadow-lg shadow-accent/10">
+              <Link href="/admin/products">
+                <Plus className="w-4 h-4" /> New Piece
+              </Link>
+            </Button>
+          </div>
         </div>
 
         {/* Stats Grid */}
@@ -116,15 +135,15 @@ export default function AdminDashboard() {
           
           <Card className="border border-white/5 bg-card/50 shadow-2xl rounded-2xl">
             <CardHeader className="flex flex-row items-center justify-between pb-12">
-              <CardTitle className="text-[10px] font-bold text-muted uppercase tracking-widest">Pending Orders</CardTitle>
-              <div className="w-8 h-8 rounded-lg bg-destructive/10 flex items-center justify-center">
-                <Users className="w-4 h-4 text-destructive" />
+              <CardTitle className="text-[10px] font-bold text-muted uppercase tracking-widest">Journal Entries</CardTitle>
+              <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center">
+                <FileText className="w-4 h-4 text-accent" />
               </div>
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold">12</div>
-              <p className="text-[10px] text-destructive font-bold uppercase tracking-widest mt-8 animate-pulse">
-                Attention Required
+              <p className="text-[10px] text-muted font-bold uppercase tracking-widest mt-8">
+                8 published • 4 drafts
               </p>
             </CardContent>
           </Card>
@@ -174,20 +193,20 @@ export default function AdminDashboard() {
                 </Link>
               </Button>
               <Button asChild variant="outline" className="w-full justify-start gap-12 border-white/10 bg-white/5 h-14 rounded-xl hover:border-accent/40 transition-all">
+                <Link href="/admin/journal" className="flex items-center gap-12 w-full">
+                  <FileText className="w-4 h-4 text-accent" />
+                  <div className="text-left">
+                    <p className="text-[10px] font-bold uppercase tracking-widest">Journal Control</p>
+                    <p className="text-[8px] text-muted">Write and publish stories</p>
+                  </div>
+                </Link>
+              </Button>
+              <Button asChild variant="outline" className="w-full justify-start gap-12 border-white/10 bg-white/5 h-14 rounded-xl hover:border-accent/40 transition-all">
                 <Link href="/admin/coupons" className="flex items-center gap-12 w-full">
                   <Tag className="w-4 h-4 text-accent" />
                   <div className="text-left">
                     <p className="text-[10px] font-bold uppercase tracking-widest">Coupon Control</p>
                     <p className="text-[8px] text-muted">Active and expired codes</p>
-                  </div>
-                </Link>
-              </Button>
-              <Button asChild variant="outline" className="w-full justify-start gap-12 border-white/10 bg-white/5 h-14 rounded-xl hover:border-accent/40 transition-all">
-                <Link href="#" className="flex items-center gap-12 w-full">
-                  <Settings className="w-4 h-4 text-accent" />
-                  <div className="text-left">
-                    <p className="text-[10px] font-bold uppercase tracking-widest">Store Settings</p>
-                    <p className="text-[8px] text-muted">Business and API keys</p>
                   </div>
                 </Link>
               </Button>
