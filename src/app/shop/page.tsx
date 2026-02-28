@@ -1,9 +1,7 @@
-
 "use client"
 
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { ShopHeader } from '@/components/ShopHeader'
 import { ProductCard } from '@/components/ProductCard'
 import { PRODUCTS, COLLECTIONS } from '@/lib/mock-data'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -37,8 +35,6 @@ export default function ShopPage() {
 
   return (
     <div className="min-h-screen">
-      <ShopHeader />
-      
       <main className="container mx-auto px-16 py-[128px]">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-16 mb-48">
           <div>

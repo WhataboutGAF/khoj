@@ -1,11 +1,9 @@
-
 "use client"
 
 import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { ShopHeader } from '@/components/ShopHeader'
 import { ProductCard } from '@/components/ProductCard'
 import { PRODUCTS } from '@/lib/mock-data'
 import { PlaceHolderImages } from '@/lib/placeholder-images'
@@ -22,8 +20,6 @@ export default function Home() {
     <div className="min-h-screen bg-background relative overflow-x-hidden">
       {/* Global Grain Overlay */}
       <div className="fixed inset-0 z-[100] grain-overlay opacity-[0.03] pointer-events-none" />
-      
-      <ShopHeader />
       
       <main>
         {/* Hero Section */}

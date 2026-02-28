@@ -3,7 +3,6 @@
 import { useState, useMemo, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import Image from 'next/image'
-import { ShopHeader } from '@/components/ShopHeader'
 import { PRODUCTS, COUPONS } from '@/lib/mock-data'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -79,9 +78,7 @@ URL: ${window.location.href}`
 
   return (
     <div className="min-h-screen pb-32">
-      <ShopHeader />
-      
-      <main className="container mx-auto px-16 py-32">
+      <main className="container mx-auto px-16 py-128">
         <div className="grid md:grid-cols-2 gap-48 lg:gap-64">
           {/* Image Gallery */}
           <div className="space-y-16">
