@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState, useMemo, useEffect } from 'react'
@@ -7,7 +8,7 @@ import { PRODUCTS, COUPONS } from '@/lib/mock-data'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
-import { Check, Info, Minus, Plus } from 'lucide-react'
+import { Check, Info, Plus } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useToast } from '@/hooks/use-toast'
 
@@ -150,9 +151,9 @@ URL: ${window.location.href}`
                       key={size}
                       onClick={() => setSelectedSize(size)}
                       className={cn(
-                        "h-14 px-24 flex items-center justify-center rounded-xl border text-sm font-bold transition-all",
+                        "h-11 px-16 flex items-center justify-center rounded-lg border text-xs font-bold transition-all",
                         selectedSize === size 
-                          ? "border-accent bg-accent text-background shadow-lg shadow-accent/20" 
+                          ? "border-accent bg-accent text-background shadow-lg shadow-accent/10" 
                           : "border-white/10 hover:border-muted-foreground bg-white/5"
                       )}
                     >
@@ -170,7 +171,7 @@ URL: ${window.location.href}`
                       key={color}
                       onClick={() => handleColorChange(color)}
                       className={cn(
-                        "px-20 py-10 rounded-full border text-[10px] font-bold uppercase tracking-widest transition-all",
+                        "px-12 py-6 rounded-full border text-[9px] font-bold uppercase tracking-widest transition-all",
                         selectedColor === color 
                           ? "border-accent bg-accent text-background shadow-subtle shadow-accent/10" 
                           : "border-white/10 hover:border-muted-foreground bg-white/5"
