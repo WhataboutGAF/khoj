@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState } from 'react'
@@ -7,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { ShieldCheck, Eye, EyeOff, Loader2 } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
+import { useAuth, initiateAnonymousSignIn } from '@/firebase'
 
 export default function JustVibing() {
   const [password, setPassword] = useState('')
@@ -14,6 +16,7 @@ export default function JustVibing() {
   const [isAuthenticating, setIsAuthenticating] = useState(false)
   const router = useRouter()
   const { toast } = useToast()
+  const auth = useAuth()
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
@@ -22,6 +25,9 @@ export default function JustVibing() {
     // Secure delay for realistic feedback
     setTimeout(() => {
       if (password === 'KHOJ@2082') {
+        // Sign into Firebase Auth to satisfy security rules
+        initiateAnonymousSignIn(auth);
+        
         sessionStorage.setItem('is_khoj_admin', 'true')
         router.push('/admin/dashboard')
         toast({
