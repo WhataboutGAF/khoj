@@ -1,11 +1,12 @@
 "use client"
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { ShopHeader } from '@/components/ShopHeader'
 import { ProductCard } from '@/components/ProductCard'
 import { PRODUCTS, COLLECTIONS } from '@/lib/mock-data'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { SlidersHorizontal } from 'lucide-react'
+import { SlidersHorizontal, SearchX } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Sheet,
@@ -17,21 +18,32 @@ import {
 } from "@/components/ui/sheet"
 
 export default function ShopPage() {
+  const searchParams = useSearchParams()
+  const query = searchParams.get('q') || ''
   const [activeTab, setActiveTab] = useState('all')
 
   const filteredProducts = useMemo(() => {
-    if (activeTab === 'all') return PRODUCTS
-    return PRODUCTS.filter(p => p.category === activeTab)
-  }, [activeTab])
+    return PRODUCTS.filter(p => {
+      const matchesCategory = activeTab === 'all' || p.category === activeTab
+      const matchesSearch = !query || 
+        p.name.toLowerCase().includes(query.toLowerCase()) || 
+        p.description.toLowerCase().includes(query.toLowerCase())
+      const isPublic = p.isVisible && ['jeans', 'shorts', 'pants'].includes(p.category.toLowerCase())
+      
+      return matchesCategory && matchesSearch && isPublic
+    })
+  }, [activeTab, query])
 
   return (
     <div className="min-h-screen">
       <ShopHeader />
       
-      <main className="container mx-auto px-16 py-32">
+      <main className="container mx-auto px-16 py-[128px]">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-16 mb-48">
           <div>
-            <h1 className="text-4xl font-bold mb-8">Catalogue</h1>
+            <h1 className="text-4xl font-bold mb-8">
+              {query ? `Search: ${query}` : 'Catalogue'}
+            </h1>
             <p className="text-muted text-sm">Explore our curated range of minimalist essentials.</p>
           </div>
           
@@ -57,22 +69,22 @@ export default function ShopPage() {
                   <span className="hidden sm:inline">Filters</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="bottom" className="rounded-t-2xl h-[60vh]">
+              <SheetContent side="bottom" className="rounded-t-2xl h-[60vh] premium-blur">
                 <SheetHeader className="text-left">
                   <SheetTitle className="text-xl font-bold">Refine Results</SheetTitle>
                   <SheetDescription>Adjust filters to find exactly what you are looking for.</SheetDescription>
                 </SheetHeader>
                 <div className="py-24 space-y-24">
                   <div className="space-y-16">
-                    <h4 className="text-sm font-bold uppercase tracking-wider">Sort By</h4>
+                    <h4 className="text-sm font-bold uppercase tracking-wider text-muted">Sort By</h4>
                     <div className="flex flex-wrap gap-8">
                       {['Latest', 'Price: Low to High', 'Price: High to Low'].map(s => (
-                        <Button key={s} variant="secondary" className="rounded-full text-xs h-9 px-16">{s}</Button>
+                        <Button key={s} variant="secondary" className="rounded-full text-xs h-9 px-16 bg-white/5">{s}</Button>
                       ))}
                     </div>
                   </div>
                   <div className="space-y-16">
-                    <h4 className="text-sm font-bold uppercase tracking-wider">Availability</h4>
+                    <h4 className="text-sm font-bold uppercase tracking-wider text-muted">Availability</h4>
                     <div className="flex gap-8">
                       <Button variant="outline" className="rounded-full text-xs h-9 px-16">In Stock</Button>
                       <Button variant="outline" className="rounded-full text-xs h-9 px-16 opacity-50">Sold Out</Button>
@@ -80,22 +92,28 @@ export default function ShopPage() {
                   </div>
                 </div>
                 <div className="absolute bottom-16 left-16 right-16">
-                  <Button className="w-full h-12 rounded-lg bg-primary text-white">Apply Filters</Button>
+                  <Button className="w-full h-12 rounded-lg bg-accent text-primary font-bold">Apply Filters</Button>
                 </div>
               </SheetContent>
             </Sheet>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-16 gap-y-32">
-          {filteredProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
-        
-        {filteredProducts.length === 0 && (
-          <div className="text-center py-64">
-            <p className="text-muted">No products found in this collection.</p>
+        {filteredProducts.length > 0 ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-24 gap-y-48">
+            {filteredProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-[128px] space-y-24 border border-dashed border-white/5 rounded-3xl">
+            <div className="w-64 h-64 bg-white/5 rounded-full flex items-center justify-center mx-auto">
+              <SearchX className="w-32 h-32 text-muted" />
+            </div>
+            <div className="space-y-8">
+              <h3 className="text-xl font-bold">No matches.</h3>
+              <p className="text-muted text-sm max-w-xs mx-auto">Try a softer search or explore other categories.</p>
+            </div>
           </div>
         )}
       </main>
