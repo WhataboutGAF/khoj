@@ -37,7 +37,7 @@ export default function ProductDetail() {
     return product.price - appliedCoupon.discount
   }, [product, appliedCoupon])
 
-  if (!product) return <div>Product not found</div>
+  if (!product) return <div className="min-h-screen flex items-center justify-center">Product not found</div>
 
   const handleApplyCoupon = () => {
     const coupon = COUPONS.find(c => c.code.toUpperCase() === couponCode.toUpperCase() && c.isActive)
@@ -68,12 +68,12 @@ export default function ProductDetail() {
     const message = `Order for ${product.name}
 Size: ${selectedSize}
 Color: ${selectedColor}
-Price: ₹${finalPrice.toLocaleString()}
+Price: NPR ${finalPrice.toLocaleString()}
 Coupon: ${appliedCoupon?.code || 'None'}
 URL: ${window.location.href}`
 
     const encodedMessage = encodeURIComponent(message)
-    window.open(`https://wa.me/910000000000?text=${encodedMessage}`, '_blank')
+    window.open(`https://wa.me/9779800000000?text=${encodedMessage}`, '_blank')
   }
 
   return (
@@ -88,12 +88,13 @@ URL: ${window.location.href}`
                 alt={product.name} 
                 fill 
                 className="object-cover"
+                priority
                 data-ai-hint="fashion clothes"
               />
             </div>
             <div className="grid grid-cols-4 gap-16">
               {product.images.map((img, i) => (
-                <div key={i} className="relative aspect-[4/5] rounded-lg overflow-hidden bg-secondary border border-border cursor-pointer">
+                <div key={i} className="relative aspect-[4/5] rounded-lg overflow-hidden bg-secondary border border-white/5 cursor-pointer hover:border-accent transition-colors">
                   <Image src={img} alt={`${product.name} ${i}`} fill className="object-cover" />
                 </div>
               ))}
@@ -104,16 +105,16 @@ URL: ${window.location.href}`
           <div className="space-y-32">
             <div className="space-y-16">
               <div className="flex items-center gap-16">
-                <Badge variant="secondary" className="bg-secondary text-primary font-bold px-12 py-4 rounded-md">NEW</Badge>
-                <span className="text-xs font-bold uppercase tracking-widest text-muted">{product.category}</span>
+                <Badge variant="secondary" className="bg-white/10 text-primary font-bold px-12 py-4 rounded-md">NEW</Badge>
+                <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">{product.category}</span>
               </div>
               <h1 className="text-4xl font-bold tracking-tight">{product.name}</h1>
               <div className="flex items-center gap-16">
-                <p className="text-2xl font-bold text-primary transition-all duration-300">
-                  ₹{finalPrice.toLocaleString()}
+                <p className="text-2xl font-bold text-accent transition-all duration-300">
+                  NPR {finalPrice.toLocaleString()}
                 </p>
                 {product.originalPrice && (
-                  <p className="text-lg text-muted line-through">₹{product.originalPrice.toLocaleString()}</p>
+                  <p className="text-lg text-muted line-through opacity-50">NPR {product.originalPrice.toLocaleString()}</p>
                 )}
               </div>
               <p className="text-muted leading-relaxed max-w-lg">{product.description}</p>
@@ -123,8 +124,8 @@ URL: ${window.location.href}`
             <div className="space-y-24">
               <div className="space-y-12">
                 <div className="flex items-center justify-between">
-                  <label className="text-sm font-bold uppercase tracking-wider">Select Size</label>
-                  <button className="text-xs text-accent font-semibold underline underline-offset-4">Size Guide</button>
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-muted">Select Size</label>
+                  <button className="text-[10px] text-accent font-bold uppercase tracking-widest underline underline-offset-4">Size Guide</button>
                 </div>
                 <div className="flex flex-wrap gap-8">
                   {product.sizes.map(size => (
@@ -132,10 +133,10 @@ URL: ${window.location.href}`
                       key={size}
                       onClick={() => setSelectedSize(size)}
                       className={cn(
-                        "w-16 h-12 flex items-center justify-center rounded-lg border text-sm font-bold transition-all",
+                        "w-16 h-12 flex items-center justify-center rounded-lg border text-xs font-bold transition-all",
                         selectedSize === size 
-                          ? "border-primary bg-primary text-white" 
-                          : "border-border hover:border-muted-foreground"
+                          ? "border-accent bg-accent text-background" 
+                          : "border-white/10 hover:border-muted-foreground"
                       )}
                     >
                       {size}
@@ -145,17 +146,17 @@ URL: ${window.location.href}`
               </div>
 
               <div className="space-y-12">
-                <label className="text-sm font-bold uppercase tracking-wider">Select Color</label>
+                <label className="text-[10px] font-bold uppercase tracking-widest text-muted">Select Color</label>
                 <div className="flex flex-wrap gap-12">
                   {product.colors.map(color => (
                     <button
                       key={color}
                       onClick={() => setSelectedColor(color)}
                       className={cn(
-                        "px-16 py-8 rounded-full border text-xs font-bold transition-all",
+                        "px-16 py-8 rounded-full border text-[10px] font-bold uppercase tracking-widest transition-all",
                         selectedColor === color 
-                          ? "border-primary bg-primary text-white shadow-subtle" 
-                          : "border-border hover:border-muted-foreground"
+                          ? "border-accent bg-accent text-background shadow-subtle" 
+                          : "border-white/10 hover:border-muted-foreground"
                       )}
                     >
                       {color}
@@ -166,11 +167,11 @@ URL: ${window.location.href}`
             </div>
 
             {/* Coupons */}
-            <div className="space-y-16 pt-16 border-t border-border">
+            <div className="space-y-16 pt-16 border-t border-white/5">
               {!showCouponInput ? (
                 <button 
                   onClick={() => setShowCouponInput(true)}
-                  className="text-sm font-semibold text-accent hover:text-accent/80 transition-colors flex items-center gap-8"
+                  className="text-[10px] font-bold text-accent hover:text-accent/80 transition-colors flex items-center gap-8 uppercase tracking-widest"
                 >
                   <Plus className="w-4 h-4" /> Add Coupon
                 </button>
@@ -179,19 +180,19 @@ URL: ${window.location.href}`
                   <div className="flex gap-8">
                     <Input 
                       placeholder="Enter code" 
-                      className="h-10 border-border focus-visible:ring-accent" 
+                      className="h-10 border-white/10 bg-secondary focus-visible:ring-accent" 
                       value={couponCode}
                       onChange={(e) => setCouponCode(e.target.value)}
                     />
                     <Button 
-                      className="bg-accent text-white px-24 h-10 rounded-lg"
+                      className="bg-accent text-background font-bold uppercase text-[10px] tracking-widest px-24 h-10 rounded-lg"
                       onClick={handleApplyCoupon}
                     >
                       Apply
                     </Button>
                   </div>
                   {appliedCoupon && (
-                    <p className="text-xs font-bold text-accent flex items-center gap-4">
+                    <p className="text-[10px] font-bold text-accent flex items-center gap-4 uppercase tracking-widest">
                       <Check className="w-3 h-3" /> Coupon {appliedCoupon.code} applied.
                     </p>
                   )}
@@ -202,17 +203,17 @@ URL: ${window.location.href}`
             {/* Desktop Action */}
             <div className="hidden md:block pt-32 space-y-16">
               {!selectedSize && (
-                <div className="flex items-center gap-8 p-12 bg-secondary rounded-lg text-xs text-muted">
-                  <Info className="w-4 h-4" />
-                  <span>Select a size to continue with your order</span>
+                <div className="flex items-center gap-8 p-12 bg-white/5 rounded-lg text-[10px] text-muted uppercase tracking-widest font-bold">
+                  <Info className="w-4 h-4 text-accent" />
+                  <span>Select a size to continue</span>
                 </div>
               )}
               <Button 
                 onClick={handleOrder}
                 disabled={!selectedSize}
                 className={cn(
-                  "w-full h-14 rounded-lg bg-primary text-white text-base font-bold transition-all duration-300",
-                  !selectedSize ? "opacity-60 grayscale" : "hover:scale-[1.01] active:scale-[0.98]"
+                  "w-full h-14 rounded-lg bg-primary text-background text-sm font-bold uppercase tracking-widest transition-all duration-300",
+                  !selectedSize ? "opacity-40 grayscale" : "hover:scale-[1.01] active:scale-[0.98] shadow-2xl shadow-accent/20"
                 )}
               >
                 Order via WhatsApp
@@ -224,19 +225,19 @@ URL: ${window.location.href}`
 
       {/* Sticky Mobile/Desktop CTA */}
       <div className={cn(
-        "fixed bottom-0 left-0 right-0 z-50 premium-blur border-t border-border p-16 transition-all duration-500 transform",
+        "fixed bottom-0 left-0 right-0 z-50 premium-blur border-t border-white/5 p-16 transition-all duration-500 transform",
         isScrolled ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
       )}>
         <div className="container mx-auto max-w-4xl flex items-center justify-between gap-16">
           <div className="flex flex-col">
-            <span className="text-xs font-bold text-muted uppercase">Total Price</span>
-            <span className="text-xl font-bold">₹{finalPrice.toLocaleString()}</span>
+            <span className="text-[10px] font-bold text-muted uppercase tracking-widest">Price</span>
+            <span className="text-xl font-bold text-accent">NPR {finalPrice.toLocaleString()}</span>
           </div>
           <Button 
             onClick={handleOrder}
             className={cn(
-              "px-32 h-12 rounded-lg bg-primary text-white font-bold transition-all",
-              !selectedSize && "opacity-60"
+              "px-32 h-12 rounded-lg bg-primary text-background font-bold uppercase tracking-widest text-[10px] transition-all",
+              !selectedSize && "opacity-40"
             )}
           >
             {selectedSize ? "Order Now" : "Select Size"}
