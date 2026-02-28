@@ -165,13 +165,13 @@ URL: ${window.location.href}`
 
               <div className="space-y-16">
                 <label className="text-[10px] font-bold uppercase tracking-widest text-muted">Select Color</label>
-                <div className="flex flex-wrap gap-12">
+                <div className="flex flex-wrap gap-8">
                   {product.colors.map(color => (
                     <button
                       key={color}
                       onClick={() => handleColorChange(color)}
                       className={cn(
-                        "px-12 py-6 rounded-full border text-[9px] font-bold uppercase tracking-widest transition-all",
+                        "px-10 py-5 rounded-full border text-[8px] font-bold uppercase tracking-widest transition-all",
                         selectedColor === color 
                           ? "border-accent bg-accent text-background shadow-subtle shadow-accent/10" 
                           : "border-white/10 hover:border-muted-foreground bg-white/5"
@@ -230,7 +230,7 @@ URL: ${window.location.href}`
                 onClick={handleOrder}
                 disabled={!selectedSize}
                 className={cn(
-                  "w-full h-16 rounded-xl bg-primary text-background text-sm font-bold uppercase tracking-widest transition-all duration-300",
+                  "w-full h-64 rounded-xl bg-primary text-background text-sm font-bold uppercase tracking-widest transition-all duration-300",
                   !selectedSize ? "opacity-40 grayscale" : "hover:scale-[1.01] active:scale-[0.98] shadow-2xl shadow-accent/20"
                 )}
               >
