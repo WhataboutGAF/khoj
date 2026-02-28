@@ -4,6 +4,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
+import Image from 'next/image'
 import { 
   Package, 
   Tag, 
@@ -13,16 +14,40 @@ import {
   Plus,
   FileText,
   Menu,
-  X
+  X,
+  Loader2
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
+import { useFirestore, useCollection, useMemoFirebase } from '@/firebase'
+import { collection, query, orderBy, limit } from 'firebase/firestore'
+import { Product, Post } from '@/lib/types'
 
 export default function AdminDashboard() {
   const router = useRouter()
   const pathname = usePathname()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const db = useFirestore()
+
+  // Fetch real data for stats and lists
+  const productsQuery = useMemoFirebase(() => {
+    if (!db) return null
+    return query(collection(db, 'products'), orderBy('createdAt', 'desc'))
+  }, [db])
+  const { data: products, isLoading: productsLoading } = useCollection<Product>(productsQuery)
+
+  const recentProductsQuery = useMemoFirebase(() => {
+    if (!db) return null
+    return query(collection(db, 'products'), orderBy('createdAt', 'desc'), limit(3))
+  }, [db])
+  const { data: recentProducts } = useCollection<Product>(recentProductsQuery)
+
+  const postsQuery = useMemoFirebase(() => {
+    if (!db) return null
+    return query(collection(db, 'posts'), orderBy('createdAt', 'desc'))
+  }, [db])
+  const { data: posts, isLoading: postsLoading } = useCollection<Post>(postsQuery)
 
   useEffect(() => {
     const isAdmin = sessionStorage.getItem('is_khoj_admin')
@@ -150,9 +175,12 @@ export default function AdminDashboard() {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-4xl font-bold tracking-tighter">48 <span className="text-sm font-medium text-muted">SKUs</span></div>
+              <div className="text-4xl font-bold tracking-tighter">
+                {productsLoading ? <Loader2 className="w-6 h-6 animate-spin inline" /> : products?.length || 0}
+                <span className="text-sm font-medium text-muted ml-8">SKUs</span>
+              </div>
               <p className="text-[10px] text-muted font-bold uppercase tracking-widest mt-8">
-                6 items Low Stock
+                {products?.filter(p => !p.isVisible).length || 0} drafts • {products?.filter(p => p.isVisible).length || 0} active
               </p>
             </CardContent>
           </Card>
@@ -165,9 +193,12 @@ export default function AdminDashboard() {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-4xl font-bold tracking-tighter">12 <span className="text-sm font-medium text-muted">Stories</span></div>
+              <div className="text-4xl font-bold tracking-tighter">
+                {postsLoading ? <Loader2 className="w-6 h-6 animate-spin inline" /> : posts?.length || 0}
+                <span className="text-sm font-medium text-muted ml-8">Stories</span>
+              </div>
               <p className="text-[10px] text-muted font-bold uppercase tracking-widest mt-8">
-                8 published • 4 drafts
+                {posts?.filter(p => p.published).length || 0} published • {posts?.filter(p => !p.published).length || 0} drafts
               </p>
             </CardContent>
           </Card>
@@ -181,20 +212,36 @@ export default function AdminDashboard() {
             </CardHeader>
             <CardContent className="p-0">
               <div className="divide-y divide-white/5">
-                {[1, 2, 3].map(i => (
-                  <div key={i} className="flex items-center justify-between p-24 hover:bg-white/5 transition-colors group">
-                    <div className="flex items-center gap-20">
-                      <div className="w-48 h-48 bg-background rounded-xl border border-white/10 overflow-hidden relative">
-                        {/* Placeholder for product img */}
-                      </div>
-                      <div>
-                        <p className="text-sm font-bold">Series 08 - Variant {i}</p>
-                        <p className="text-[9px] text-muted font-bold uppercase tracking-widest mt-2">Apparel • ₹4,500</p>
-                      </div>
-                    </div>
-                    <ChevronRight className="w-4 h-4 text-muted group-hover:text-accent transition-all transform group-hover:translate-x-4" />
+                {productsLoading ? (
+                  <div className="p-32 text-center text-muted">
+                    <Loader2 className="w-6 h-6 animate-spin mx-auto" />
                   </div>
-                ))}
+                ) : recentProducts?.length === 0 ? (
+                  <div className="p-32 text-center text-muted uppercase text-[10px] font-bold tracking-widest">
+                    No items found
+                  </div>
+                ) : (
+                  recentProducts?.map(product => (
+                    <Link key={product.id} href={`/admin/products/${product.id}`} className="flex items-center justify-between p-24 hover:bg-white/5 transition-colors group">
+                      <div className="flex items-center gap-20">
+                        <div className="w-48 h-48 bg-background rounded-xl border border-white/10 overflow-hidden relative shrink-0">
+                          {product.images?.[0] ? (
+                            <Image src={product.images[0]} alt={product.name} fill className="object-cover" />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-[8px] text-muted font-bold">NO IMG</div>
+                          )}
+                        </div>
+                        <div>
+                          <p className="text-sm font-bold text-foreground">{product.name}</p>
+                          <p className="text-[9px] text-muted font-bold uppercase tracking-widest mt-2">
+                            {product.category} • NPR {product.price.toLocaleString()}
+                          </p>
+                        </div>
+                      </div>
+                      <ChevronRight className="w-4 h-4 text-muted group-hover:text-accent transition-all transform group-hover:translate-x-4" />
+                    </Link>
+                  ))
+                )}
               </div>
               <div className="p-20 bg-white/[0.02]">
                 <Button variant="ghost" className="w-full text-[10px] font-bold uppercase tracking-widest text-accent hover:bg-accent/10 h-10" asChild>
