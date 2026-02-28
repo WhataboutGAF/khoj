@@ -33,8 +33,24 @@ export function Footer() {
         <div className="space-y-16">
           <h4 className="text-[10px] font-bold uppercase tracking-widest text-muted">Connect</h4>
           <ul className="space-y-12 text-sm">
-            <li><a href="#" className="text-muted hover:text-accent transition-colors">Instagram</a></li>
-            <li><a href="#" className="text-muted hover:text-accent transition-colors">Twitter</a></li>
+            <li>
+              <a 
+                href="https://www.instagram.com/khoj_82" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="text-muted hover:text-accent transition-colors"
+              >
+                Instagram
+              </a>
+            </li>
+            <li>
+              <a 
+                href="#" 
+                className="text-muted hover:text-accent transition-colors"
+              >
+                Twitter
+              </a>
+            </li>
           </ul>
         </div>
       </div>
