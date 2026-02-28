@@ -4,9 +4,9 @@ import { useState, useMemo } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { ProductCard } from '@/components/ProductCard'
 import { PRODUCTS, COLLECTIONS } from '@/lib/mock-data'
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { SlidersHorizontal, SearchX } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 import {
   Sheet,
   SheetContent,
@@ -41,55 +41,66 @@ export default function ShopPage() {
             <h1 className="text-4xl font-bold mb-8">
               {query ? `Search: ${query}` : 'Catalogue'}
             </h1>
-            <p className="text-muted text-sm">Explore our curated range of minimalist essentials.</p>
+            <p className="text-muted text-sm font-medium">Explore our curated range of minimalist essentials.</p>
           </div>
           
           <div className="flex items-center gap-16">
-            <Tabs defaultValue="all" className="w-full md:w-auto overflow-x-auto no-scrollbar" onValueChange={setActiveTab}>
-              <TabsList className="bg-transparent border border-border h-11 p-4 rounded-lg">
-                {COLLECTIONS.map(col => (
-                  <TabsTrigger 
-                    key={col.slug} 
-                    value={col.slug}
-                    className="data-[state=active]:bg-primary data-[state=active]:text-white rounded-md px-16 h-8 text-xs font-semibold"
-                  >
-                    {col.name}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-            </Tabs>
+            {/* Custom Premium Tabs */}
+            <div className="bg-secondary border border-white/10 p-4 rounded-[12px] flex items-center overflow-x-auto no-scrollbar">
+              {COLLECTIONS.map(col => (
+                <button
+                  key={col.slug}
+                  onClick={() => setActiveTab(col.slug)}
+                  className={cn(
+                    "relative px-16 py-8 text-[10px] font-bold uppercase tracking-[0.2em] transition-all duration-200 whitespace-nowrap",
+                    activeTab === col.slug 
+                      ? "text-foreground" 
+                      : "text-muted hover:text-foreground"
+                  )}
+                >
+                  {col.name}
+                  {activeTab === col.slug && (
+                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-[1px] bg-accent" />
+                  )}
+                </button>
+              ))}
+            </div>
 
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="outline" className="h-11 px-16 rounded-lg gap-8 border-border">
+                <Button variant="outline" className="h-11 px-16 rounded-[12px] gap-8 border-white/10 bg-secondary hover:bg-secondary/80">
                   <SlidersHorizontal className="w-4 h-4" />
-                  <span className="hidden sm:inline">Filters</span>
+                  <span className="hidden sm:inline text-[10px] font-bold uppercase tracking-widest">Filters</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="bottom" className="rounded-t-2xl h-[60vh] premium-blur">
+              <SheetContent side="bottom" className="rounded-t-2xl h-[60vh] premium-blur border-white/10">
                 <SheetHeader className="text-left">
                   <SheetTitle className="text-xl font-bold">Refine Results</SheetTitle>
                   <SheetDescription>Adjust filters to find exactly what you are looking for.</SheetDescription>
                 </SheetHeader>
                 <div className="py-24 space-y-24">
                   <div className="space-y-16">
-                    <h4 className="text-sm font-bold uppercase tracking-wider text-muted">Sort By</h4>
+                    <h4 className="text-[10px] font-bold uppercase tracking-widest text-muted">Sort By</h4>
                     <div className="flex flex-wrap gap-8">
                       {['Latest', 'Price: Low to High', 'Price: High to Low'].map(s => (
-                        <Button key={s} variant="secondary" className="rounded-full text-xs h-9 px-16 bg-white/5">{s}</Button>
+                        <Button key={s} variant="secondary" className="rounded-full text-[10px] h-9 px-16 bg-white/5 hover:bg-white/10">
+                          {s}
+                        </Button>
                       ))}
                     </div>
                   </div>
                   <div className="space-y-16">
-                    <h4 className="text-sm font-bold uppercase tracking-wider text-muted">Availability</h4>
+                    <h4 className="text-[10px] font-bold uppercase tracking-widest text-muted">Availability</h4>
                     <div className="flex gap-8">
-                      <Button variant="outline" className="rounded-full text-xs h-9 px-16">In Stock</Button>
-                      <Button variant="outline" className="rounded-full text-xs h-9 px-16 opacity-50">Sold Out</Button>
+                      <Button variant="outline" className="rounded-full text-[10px] h-9 px-16 border-white/10">In Stock</Button>
+                      <Button variant="outline" className="rounded-full text-[10px] h-9 px-16 opacity-30 border-white/10">Sold Out</Button>
                     </div>
                   </div>
                 </div>
                 <div className="absolute bottom-16 left-16 right-16">
-                  <Button className="w-full h-12 rounded-lg bg-accent text-primary font-bold">Apply Filters</Button>
+                  <Button className="w-full h-12 rounded-[12px] bg-accent text-[#0B0D12] font-bold uppercase text-[10px] tracking-widest">
+                    Apply Filters
+                  </Button>
                 </div>
               </SheetContent>
             </Sheet>
@@ -103,7 +114,7 @@ export default function ShopPage() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-[128px] space-y-24 border border-dashed border-white/5 rounded-3xl">
+          <div className="text-center py-[128px] space-y-24 border border-dashed border-white/10 rounded-3xl">
             <div className="w-64 h-64 bg-white/5 rounded-full flex items-center justify-center mx-auto">
               <SearchX className="w-32 h-32 text-muted" />
             </div>
