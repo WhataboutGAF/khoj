@@ -26,8 +26,8 @@ export default function Home() {
           
           <div className="container mx-auto px-16 h-full relative z-20">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-24 h-full">
-              {/* Left Content: 6 Columns */}
-              <div className="col-span-1 md:col-span-6 space-y-32">
+              {/* Left Content: 6 Columns - Elevated z-index to prevent clipping */}
+              <div className="col-span-1 md:col-span-6 space-y-32 relative z-30">
                 <div className="space-y-12">
                   <span className="text-xs font-semibold tracking-[0.2em] text-muted uppercase block">
                     KHOJ / Collection
@@ -41,7 +41,7 @@ export default function Home() {
                 </div>
                 
                 <div className="flex items-center gap-24 pt-8">
-                  <Button asChild className="bg-accent text-[#0B0D12] hover:bg-accent/90 px-32 h-12 rounded-xl font-bold transition-all hover:scale-[1.02] shadow-xl shadow-accent/10">
+                  <Button asChild className="bg-accent text-[#0B0D12] hover:bg-accent/90 px-32 h-12 min-w-[120px] rounded-xl font-bold transition-all hover:scale-[1.02] shadow-xl shadow-accent/10">
                     <Link href="/shop">Shop</Link>
                   </Button>
                   <Link href="/collections" className="group flex items-center gap-8 text-sm font-bold text-foreground hover:text-accent transition-colors">
@@ -51,7 +51,7 @@ export default function Home() {
               </div>
 
               {/* Right Content: 6 Columns (Model Image) */}
-              <div className="hidden md:block col-span-6 relative h-full">
+              <div className="hidden md:block col-span-6 relative h-full z-10">
                 <div className="absolute top-0 right-0 w-[110%] h-[120%] -mr-48">
                   <Image
                     src={modelImage}
