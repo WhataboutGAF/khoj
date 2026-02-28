@@ -25,6 +25,8 @@ export function Header() {
   const pathname = usePathname()
   const router = useRouter()
 
+  const isAdminRoute = pathname.startsWith('/admin') || pathname.startsWith('/justvibing')
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20)
@@ -57,6 +59,8 @@ export function Header() {
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [])
+
+  if (isAdminRoute) return null
 
   const navLinks = [
     { name: 'Shop', href: '/shop', activeMatch: ['/shop', '/product'] },
@@ -121,8 +125,8 @@ export function Header() {
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="right" className="w-full bg-background border-l border-white/5 p-32 flex flex-col pt-64">
-                  <SheetHeader className="sr-only">
-                    <SheetTitle>Navigation Menu</SheetTitle>
+                  <SheetHeader>
+                    <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
                   </SheetHeader>
                   <nav className="flex flex-col gap-32">
                     {navLinks.map((link) => (
