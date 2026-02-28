@@ -14,7 +14,10 @@ export const PRODUCTS: Product[] = [
     description: 'A refined essential crafted from heavy-weight organic denim for a perfect drape and longevity.',
     price: 4500,
     originalPrice: 5500,
-    images: ['https://images.unsplash.com/photo-1542272604-787c3835535d?q=80&w=1000&auto=format&fit=crop'],
+    images: [
+      'https://images.unsplash.com/photo-1542272604-787c3835535d?q=80&w=1000&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?q=80&w=1000&auto=format&fit=crop'
+    ],
     sizes: ['30', '32', '34', '36'],
     colors: ['Midnight Black', 'Slate Grey'],
     category: 'jeans',
@@ -26,7 +29,10 @@ export const PRODUCTS: Product[] = [
     name: 'Archival Relaxed Fit',
     description: 'Vintage-inspired relaxed fit denim with reinforced stitching and custom hardware.',
     price: 6800,
-    images: ['https://images.unsplash.com/photo-1541099649105-f69ad21f3246?q=80&w=1000&auto=format&fit=crop'],
+    images: [
+      'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?q=80&w=1000&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1511191988486-103bc3ac80ef?q=80&w=1000&auto=format&fit=crop'
+    ],
     sizes: ['30', '32', '34'],
     colors: ['Indigo', 'Raw Wash'],
     category: 'jeans',
@@ -38,7 +44,10 @@ export const PRODUCTS: Product[] = [
     name: 'Technical Chino Pant',
     description: 'Structured cotton-twill pants designed for the modern silhouette.',
     price: 5200,
-    images: ['https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?q=80&w=1000&auto=format&fit=crop'],
+    images: [
+      'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?q=80&w=1000&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1473963456455-da8843232679?q=80&w=1000&auto=format&fit=crop'
+    ],
     sizes: ['30', '32', '34'],
     colors: ['Onyx', 'Bone'],
     category: 'pants',
@@ -50,7 +59,10 @@ export const PRODUCTS: Product[] = [
     name: 'Structured Denim Short',
     description: 'Heavyweight denim shorts with a precise knee-length cut.',
     price: 3800,
-    images: ['https://images.unsplash.com/photo-1591195853828-11db59a44f6b?q=80&w=1000&auto=format&fit=crop'],
+    images: [
+      'https://images.unsplash.com/photo-1591195853828-11db59a44f6b?q=80&w=1000&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1565084888279-aff1755c944a?q=80&w=1000&auto=format&fit=crop'
+    ],
     sizes: ['30', '32', '34'],
     colors: ['Washed Black', 'Vintage Blue'],
     category: 'shorts',

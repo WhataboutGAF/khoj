@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState, useMemo, useEffect } from 'react'
@@ -19,6 +18,7 @@ export default function ProductDetail() {
 
   const [selectedSize, setSelectedSize] = useState<string | null>(null)
   const [selectedColor, setSelectedColor] = useState<string>(product?.colors[0] || '')
+  const [activeImageIndex, setActiveImageIndex] = useState(0)
   const [showCouponInput, setShowCouponInput] = useState(false)
   const [couponCode, setCouponCode] = useState('')
   const [appliedCoupon, setAppliedCoupon] = useState<{code: string, discount: number} | null>(null)
@@ -77,6 +77,15 @@ URL: ${window.location.href}`
     window.open(`https://wa.me/9779800000000?text=${encodedMessage}`, '_blank')
   }
 
+  const handleColorChange = (color: string) => {
+    setSelectedColor(color)
+    const colorIndex = product.colors.indexOf(color)
+    // If we have a specific image for this color (index-based mapping)
+    if (product.images[colorIndex]) {
+      setActiveImageIndex(colorIndex)
+    }
+  }
+
   return (
     <div className="min-h-screen pb-32">
       <main className="container mx-auto px-16 py-128">
@@ -85,17 +94,24 @@ URL: ${window.location.href}`
           <div className="space-y-16">
             <div className="relative aspect-[4/5] rounded-xl overflow-hidden bg-secondary">
               <Image 
-                src={product.images[0]} 
+                src={product.images[activeImageIndex] || product.images[0]} 
                 alt={product.name} 
                 fill 
-                className="object-cover"
+                className="object-cover transition-all duration-500"
                 priority
                 data-ai-hint="fashion clothes"
               />
             </div>
             <div className="grid grid-cols-4 gap-16">
               {product.images.map((img, i) => (
-                <div key={i} className="relative aspect-[4/5] rounded-lg overflow-hidden bg-secondary border border-white/5 cursor-pointer hover:border-accent transition-colors">
+                <div 
+                  key={i} 
+                  onClick={() => setActiveImageIndex(i)}
+                  className={cn(
+                    "relative aspect-[4/5] rounded-lg overflow-hidden bg-secondary border cursor-pointer transition-all duration-300",
+                    activeImageIndex === i ? "border-accent scale-[0.98]" : "border-white/5 hover:border-muted-foreground"
+                  )}
+                >
                   <Image src={img} alt={`${product.name} ${i}`} fill className="object-cover" />
                 </div>
               ))}
@@ -152,7 +168,7 @@ URL: ${window.location.href}`
                   {product.colors.map(color => (
                     <button
                       key={color}
-                      onClick={() => setSelectedColor(color)}
+                      onClick={() => handleColorChange(color)}
                       className={cn(
                         "px-20 py-10 rounded-full border text-[10px] font-bold uppercase tracking-widest transition-all",
                         selectedColor === color 
