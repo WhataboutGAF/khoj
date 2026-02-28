@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState, useMemo } from 'react'
@@ -20,18 +21,39 @@ export default function ShopPage() {
   const searchParams = useSearchParams()
   const query = searchParams.get('q') || ''
   const [activeTab, setActiveTab] = useState('all')
+  
+  // Filter States
+  const [sortBy, setSortBy] = useState('Latest')
+  const [availability, setAvailability] = useState<'all' | 'in-stock'>('all')
+  const [isOpen, setIsOpen] = useState(false)
 
   const filteredProducts = useMemo(() => {
-    return PRODUCTS.filter(p => {
+    let result = PRODUCTS.filter(p => {
       const matchesCategory = activeTab === 'all' || p.category === activeTab
       const matchesSearch = !query || 
         p.name.toLowerCase().includes(query.toLowerCase()) || 
         p.description.toLowerCase().includes(query.toLowerCase())
+      
+      // Enforce strictly denim/pants categories for public UI
       const isPublic = p.isVisible && ['jeans', 'shorts', 'pants'].includes(p.category.toLowerCase())
       
-      return matchesCategory && matchesSearch && isPublic
+      // Availability filter logic
+      const matchesAvailability = availability === 'all' || p.isVisible
+
+      return matchesCategory && matchesSearch && isPublic && matchesAvailability
     })
-  }, [activeTab, query])
+
+    // Sort Logic
+    if (sortBy === 'Price: Low to High') {
+      result.sort((a, b) => a.price - b.price)
+    } else if (sortBy === 'Price: High to Low') {
+      result.sort((a, b) => b.price - a.price)
+    } else if (sortBy === 'Latest') {
+      result.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    }
+
+    return result
+  }, [activeTab, query, sortBy, availability])
 
   return (
     <div className="min-h-screen">
@@ -66,39 +88,63 @@ export default function ShopPage() {
               ))}
             </div>
 
-            <Sheet>
+            <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
                 <Button variant="outline" className="h-11 px-16 rounded-[12px] gap-8 border-white/10 bg-secondary hover:bg-secondary/80">
                   <SlidersHorizontal className="w-4 h-4" />
                   <span className="hidden sm:inline text-[10px] font-bold uppercase tracking-widest">Filters</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="bottom" className="rounded-t-2xl h-[60vh] premium-blur border-white/10">
-                <SheetHeader className="text-left">
+              <SheetContent side="bottom" className="rounded-t-2xl h-[65vh] premium-blur border-white/10 p-24">
+                <SheetHeader className="text-left mb-32">
                   <SheetTitle className="text-xl font-bold">Refine Results</SheetTitle>
-                  <SheetDescription>Adjust filters to find exactly what you are looking for.</SheetDescription>
+                  <SheetDescription className="text-muted">Adjust filters to find exactly what you are looking for.</SheetDescription>
                 </SheetHeader>
-                <div className="py-24 space-y-24">
+                
+                <div className="space-y-32">
+                  {/* Sort By Section */}
                   <div className="space-y-16">
                     <h4 className="text-[10px] font-bold uppercase tracking-widest text-muted">Sort By</h4>
                     <div className="flex flex-wrap gap-8">
                       {['Latest', 'Price: Low to High', 'Price: High to Low'].map(s => (
-                        <Button key={s} variant="secondary" className="rounded-full text-[10px] h-9 px-16 bg-white/5 hover:bg-white/10">
+                        <Button 
+                          key={s} 
+                          variant={sortBy === s ? "default" : "secondary"} 
+                          onClick={() => setSortBy(s)}
+                          className={cn(
+                            "rounded-full text-[10px] h-9 px-16 transition-all",
+                            sortBy === s ? "bg-accent text-[#0B0D12]" : "bg-white/5 hover:bg-white/10"
+                          )}
+                        >
                           {s}
                         </Button>
                       ))}
                     </div>
                   </div>
+
+                  {/* Availability Section */}
                   <div className="space-y-16">
                     <h4 className="text-[10px] font-bold uppercase tracking-widest text-muted">Availability</h4>
                     <div className="flex gap-8">
-                      <Button variant="outline" className="rounded-full text-[10px] h-9 px-16 border-white/10">In Stock</Button>
-                      <Button variant="outline" className="rounded-full text-[10px] h-9 px-16 opacity-30 border-white/10">Sold Out</Button>
+                      <Button 
+                        variant={availability === 'in-stock' ? "default" : "outline"} 
+                        onClick={() => setAvailability(availability === 'in-stock' ? 'all' : 'in-stock')}
+                        className={cn(
+                          "rounded-full text-[10px] h-9 px-16 transition-all",
+                          availability === 'in-stock' ? "bg-accent text-[#0B0D12]" : "border-white/10"
+                        )}
+                      >
+                        In Stock Only
+                      </Button>
                     </div>
                   </div>
                 </div>
+
                 <div className="absolute bottom-16 left-16 right-16">
-                  <Button className="w-full h-12 rounded-[12px] bg-accent text-[#0B0D12] font-bold uppercase text-[10px] tracking-widest">
+                  <Button 
+                    onClick={() => setIsOpen(false)}
+                    className="w-full h-12 rounded-[12px] bg-accent text-[#0B0D12] font-bold uppercase text-[10px] tracking-widest hover:bg-accent/90"
+                  >
                     Apply Filters
                   </Button>
                 </div>
