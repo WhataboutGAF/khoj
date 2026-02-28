@@ -1,3 +1,4 @@
+
 "use client"
 
 import Link from 'next/link'
@@ -12,6 +13,8 @@ import {
   SheetContent,
   SheetTrigger,
   SheetClose,
+  SheetHeader,
+  SheetTitle,
 } from "@/components/ui/sheet"
 
 export function Header() {
@@ -118,6 +121,9 @@ export function Header() {
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="right" className="w-full bg-background border-l border-white/5 p-32 flex flex-col pt-64">
+                  <SheetHeader className="sr-only">
+                    <SheetTitle>Navigation Menu</SheetTitle>
+                  </SheetHeader>
                   <nav className="flex flex-col gap-32">
                     {navLinks.map((link) => (
                       <SheetClose asChild key={link.name}>

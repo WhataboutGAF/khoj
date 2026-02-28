@@ -21,13 +21,13 @@ export default function Home() {
     <div className="min-h-screen bg-background relative overflow-x-hidden">
       <main>
         {/* Hero Section */}
-        <section className="relative min-h-[75vh] flex items-start overflow-hidden pt-128 md:pt-160 pb-96 bg-[#0B0D12]">
+        <section className="relative min-h-[80vh] flex items-start overflow-visible pt-160 pb-160 bg-[#0B0D12]">
           {/* Background Radial Gradient behind model */}
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_40%,rgba(17,21,34,1)_0%,rgba(11,13,18,1)_100%)] -z-10" />
           
           <div className="container mx-auto px-16 relative z-20">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-24 h-full">
-              {/* Left Content: 6 Columns - Elevated z-index to prevent clipping */}
+              {/* Left Content: 6 Columns */}
               <div className="col-span-1 md:col-span-6 space-y-32 relative z-30">
                 <div className="space-y-12">
                   <span className="text-xs font-semibold tracking-[0.2em] text-muted uppercase block">
@@ -42,7 +42,7 @@ export default function Home() {
                 </div>
                 
                 <div className="flex items-center gap-24 pt-8">
-                  <Button asChild className="bg-accent text-[#0B0D12] hover:bg-accent/90 px-32 h-12 min-w-[120px] rounded-xl font-bold transition-all hover:scale-[1.02] shadow-xl shadow-accent/10">
+                  <Button asChild className="bg-accent text-[#0B0D12] hover:bg-accent/90 px-32 h-14 min-w-[140px] rounded-xl font-bold transition-all hover:scale-[1.02] shadow-2xl shadow-accent/20">
                     <Link href="/shop">Shop</Link>
                   </Button>
                   <Link href="/collections" className="group flex items-center gap-8 text-sm font-bold text-foreground hover:text-accent transition-colors">
