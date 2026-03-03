@@ -161,8 +161,8 @@ export default function ProductDetail() {
           </div>
 
           {/* Details Section */}
-          <div className="flex flex-col">
-            <div className="space-y-6 mb-16">
+          <div className="flex flex-col space-y-32">
+            <div className="space-y-6">
               <div className="flex items-center gap-12 text-[10px] font-bold uppercase tracking-[0.3em] text-accent">
                 <span>Khoj Studio</span>
                 <span className="w-1 h-1 rounded-full bg-accent/40" />
@@ -223,69 +223,71 @@ export default function ProductDetail() {
               </div>
             </div>
 
-            <div className="py-4">
-              {!showCouponInput ? (
-                <button 
-                  onClick={() => setShowCouponInput(true)}
-                  className="text-[10px] font-bold text-accent hover:text-accent/80 transition-colors flex items-center gap-8 uppercase tracking-[0.3em] opacity-40 hover:opacity-100"
-                >
-                  <Plus className="w-3 h-3" /> Add Coupon
-                </button>
-              ) : (
-                <div className="space-y-6 animate-in fade-in slide-in-from-top-2 duration-300 max-w-xs">
-                  <div className="flex gap-8">
-                    <Input 
-                      placeholder="COUPON CODE" 
-                      className="h-10 bg-white/5 border-white/10 text-center text-[10px] font-bold tracking-[0.2em] focus-visible:ring-accent rounded-xl" 
-                      value={couponCode}
-                      onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                    />
-                    <Button 
-                      className="bg-accent text-background font-bold uppercase text-[9px] tracking-[0.2em] px-16 h-10 rounded-xl shadow-lg shadow-accent/10"
-                      onClick={handleApplyCoupon}
-                    >
-                      Apply
-                    </Button>
+            <div className="space-y-24">
+              <div className="py-4">
+                {!showCouponInput ? (
+                  <button 
+                    onClick={() => setShowCouponInput(true)}
+                    className="text-[10px] font-bold text-accent hover:text-accent/80 transition-colors flex items-center gap-8 uppercase tracking-[0.3em] opacity-40 hover:opacity-100"
+                  >
+                    <Plus className="w-3 h-3" /> Add Coupon
+                  </button>
+                ) : (
+                  <div className="space-y-6 animate-in fade-in slide-in-from-top-2 duration-300 max-w-xs">
+                    <div className="flex gap-8">
+                      <Input 
+                        placeholder="COUPON CODE" 
+                        className="h-10 bg-white/5 border-white/10 text-center text-[10px] font-bold tracking-[0.2em] focus-visible:ring-accent rounded-xl" 
+                        value={couponCode}
+                        onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                      />
+                      <Button 
+                        className="bg-accent text-background font-bold uppercase text-[9px] tracking-[0.2em] px-16 h-10 rounded-xl shadow-lg shadow-accent/10"
+                        onClick={handleApplyCoupon}
+                      >
+                        Apply
+                      </Button>
+                    </div>
+                    {appliedCoupon && (
+                      <p className="text-[9px] font-bold text-accent flex items-center gap-6 uppercase tracking-[0.2em]">
+                        <Check className="w-3 h-3" /> Code {appliedCoupon.code} confirmed.
+                      </p>
+                    )}
                   </div>
-                  {appliedCoupon && (
-                    <p className="text-[9px] font-bold text-accent flex items-center gap-6 uppercase tracking-[0.2em]">
-                      <Check className="w-3 h-3" /> Code {appliedCoupon.code} confirmed.
-                    </p>
-                  )}
-                </div>
-              )}
-            </div>
+                )}
+              </div>
 
-            <div className="mt-auto pt-8 space-y-12">
-              {!selectedSize && (
-                <div className="flex items-center gap-12 p-10 bg-accent/5 rounded-xl text-[9px] text-accent uppercase tracking-[0.2em] font-bold border border-accent/10">
-                  <Info className="w-3 h-3" />
-                  <span>Choose a dimension to reveal order options.</span>
+              <div className="space-y-12">
+                {!selectedSize && (
+                  <div className="flex items-center gap-12 p-10 bg-accent/5 rounded-xl text-[9px] text-accent uppercase tracking-[0.2em] font-bold border border-accent/10">
+                    <Info className="w-3 h-3" />
+                    <span>Choose a dimension to reveal order options.</span>
+                  </div>
+                )}
+                
+                <div className="grid grid-cols-2 gap-12">
+                  <Button 
+                    onClick={handleOrderWhatsApp}
+                    disabled={!selectedSize}
+                    className={cn(
+                      "h-14 rounded-2xl bg-[#25D366] text-white text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 hover:bg-[#128C7E] flex items-center justify-center gap-8 shadow-xl shadow-[#25D366]/10",
+                      !selectedSize && "opacity-20 grayscale pointer-events-none"
+                    )}
+                  >
+                    <Send className="w-4 h-4" /> WhatsApp
+                  </Button>
+                  <Button 
+                    onClick={handleOrderInstagram}
+                    disabled={!selectedSize}
+                    variant="outline"
+                    className={cn(
+                      "h-14 rounded-2xl border-white/10 bg-white/5 text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 hover:bg-white/10 flex items-center justify-center gap-8",
+                      !selectedSize && "opacity-20 grayscale pointer-events-none"
+                    )}
+                  >
+                    <Instagram className="w-4 h-4" /> Instagram
+                  </Button>
                 </div>
-              )}
-              
-              <div className="grid grid-cols-2 gap-12">
-                <Button 
-                  onClick={handleOrderWhatsApp}
-                  disabled={!selectedSize}
-                  className={cn(
-                    "h-14 rounded-2xl bg-[#25D366] text-white text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 hover:bg-[#128C7E] flex items-center justify-center gap-8 shadow-xl shadow-[#25D366]/10",
-                    !selectedSize && "opacity-20 grayscale pointer-events-none"
-                  )}
-                >
-                  <Send className="w-4 h-4" /> WhatsApp
-                </Button>
-                <Button 
-                  onClick={handleOrderInstagram}
-                  disabled={!selectedSize}
-                  variant="outline"
-                  className={cn(
-                    "h-14 rounded-2xl border-white/10 bg-white/5 text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 hover:bg-white/10 flex items-center justify-center gap-8",
-                    !selectedSize && "opacity-20 grayscale pointer-events-none"
-                  )}
-                >
-                  <Instagram className="w-4 h-4" /> Instagram
-                </Button>
               </div>
             </div>
           </div>
