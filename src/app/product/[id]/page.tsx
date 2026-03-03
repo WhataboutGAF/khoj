@@ -161,8 +161,8 @@ export default function ProductDetail() {
           </div>
 
           {/* Details Section */}
-          <div className="flex flex-col space-y-24">
-            <div className="space-y-6">
+          <div className="flex flex-col space-y-16">
+            <div className="space-y-4">
               <div className="flex items-center gap-12 text-[10px] font-bold uppercase tracking-[0.3em] text-accent">
                 <span>Khoj Studio</span>
                 <span className="w-1 h-1 rounded-full bg-accent/40" />
@@ -178,11 +178,18 @@ export default function ProductDetail() {
               <p className="text-muted text-sm md:text-base leading-relaxed max-w-lg opacity-70">{product.description}</p>
             </div>
 
-            <div className="space-y-8 py-4 border-t border-white/5">
+            <div className="space-y-6 pt-16 border-t border-white/5">
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Dimension</label>
-                  <button className="text-[9px] text-accent font-bold uppercase tracking-widest underline underline-offset-4 opacity-40 hover:opacity-100 transition-opacity">Sizing Guide</button>
+                  <a 
+                    href="https://jeans.com/pages/womens-jeans-size-chart?srsltid=AfmBOorCsIj1rICyNYjVY6lDFaQpG9WVa5lA6eJoycUS6l1alFgL0bN6"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[9px] text-accent font-bold uppercase tracking-widest underline underline-offset-4 opacity-40 hover:opacity-100 transition-opacity"
+                  >
+                    Sizing Guide
+                  </a>
                 </div>
                 <div className="flex flex-wrap gap-4">
                   {product.sizes.map(size => (
@@ -202,7 +209,7 @@ export default function ProductDetail() {
                 </div>
               </div>
 
-              <div className="space-y-4 pt-4">
+              <div className="space-y-4">
                 <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Palette</label>
                 <div className="flex flex-wrap gap-4">
                   {product.colors.map(color => (
@@ -223,8 +230,8 @@ export default function ProductDetail() {
               </div>
             </div>
 
-            <div className="space-y-16">
-              <div className="py-2">
+            <div className="space-y-8">
+              <div className="py-2 border-t border-white/5 pt-16">
                 {!showCouponInput ? (
                   <button 
                     onClick={() => setShowCouponInput(true)}
@@ -257,7 +264,7 @@ export default function ProductDetail() {
                 )}
               </div>
 
-              <div className="space-y-8 pt-4 border-t border-white/5">
+              <div className="space-y-6">
                 {!selectedSize ? (
                   <div className="flex items-center gap-12 p-10 bg-accent/5 rounded-xl text-[9px] text-accent uppercase tracking-[0.2em] font-bold border border-accent/10">
                     <Info className="w-3 h-3" />
@@ -265,21 +272,23 @@ export default function ProductDetail() {
                   </div>
                 ) : (
                   <div className="space-y-8">
-                    <p className="text-[8px] font-bold text-muted uppercase tracking-[0.3em] text-center opacity-60">Initiate your order through your preferred channel</p>
-                    <div className="grid grid-cols-2 gap-12">
-                      <Button 
-                        onClick={handleOrderWhatsApp}
-                        className="h-14 rounded-2xl bg-[#25D366] text-white text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 hover:bg-[#128C7E] flex items-center justify-center gap-8 shadow-xl shadow-[#25D366]/10"
-                      >
-                        <Send className="w-4 h-4" /> WhatsApp
-                      </Button>
-                      <Button 
-                        onClick={handleOrderInstagram}
-                        variant="outline"
-                        className="h-14 rounded-2xl border-white/10 bg-white/5 text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 hover:bg-white/10 flex items-center justify-center gap-8"
-                      >
-                        <Instagram className="w-4 h-4" /> Instagram
-                      </Button>
+                    <div className="space-y-2">
+                      <p className="text-[8px] font-bold text-muted uppercase tracking-[0.3em] text-center opacity-40">These buttons are for placing orders</p>
+                      <div className="grid grid-cols-2 gap-12">
+                        <Button 
+                          onClick={handleOrderWhatsApp}
+                          className="h-14 rounded-2xl bg-[#25D366] text-white text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 hover:bg-[#128C7E] flex items-center justify-center gap-8 shadow-xl shadow-[#25D366]/10"
+                        >
+                          <Send className="w-4 h-4" /> WhatsApp
+                        </Button>
+                        <Button 
+                          onClick={handleOrderInstagram}
+                          variant="outline"
+                          className="h-14 rounded-2xl border-white/10 bg-white/5 text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 hover:bg-white/10 flex items-center justify-center gap-8"
+                        >
+                          <Instagram className="w-4 h-4" /> Instagram
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 )}
