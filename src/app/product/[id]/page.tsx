@@ -161,7 +161,7 @@ export default function ProductDetail() {
           </div>
 
           {/* Details Section */}
-          <div className="flex flex-col space-y-32">
+          <div className="flex flex-col space-y-24">
             <div className="space-y-6">
               <div className="flex items-center gap-12 text-[10px] font-bold uppercase tracking-[0.3em] text-accent">
                 <span>Khoj Studio</span>
@@ -178,7 +178,7 @@ export default function ProductDetail() {
               <p className="text-muted text-sm md:text-base leading-relaxed max-w-lg opacity-70">{product.description}</p>
             </div>
 
-            <div className="space-y-8 py-8 border-t border-white/5">
+            <div className="space-y-8 py-4 border-t border-white/5">
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Dimension</label>
@@ -202,7 +202,7 @@ export default function ProductDetail() {
                 </div>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-4 pt-4">
                 <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Palette</label>
                 <div className="flex flex-wrap gap-4">
                   {product.colors.map(color => (
@@ -223,8 +223,8 @@ export default function ProductDetail() {
               </div>
             </div>
 
-            <div className="space-y-24">
-              <div className="py-4">
+            <div className="space-y-16">
+              <div className="py-2">
                 {!showCouponInput ? (
                   <button 
                     onClick={() => setShowCouponInput(true)}
@@ -257,37 +257,32 @@ export default function ProductDetail() {
                 )}
               </div>
 
-              <div className="space-y-12">
-                {!selectedSize && (
+              <div className="space-y-8 pt-4 border-t border-white/5">
+                {!selectedSize ? (
                   <div className="flex items-center gap-12 p-10 bg-accent/5 rounded-xl text-[9px] text-accent uppercase tracking-[0.2em] font-bold border border-accent/10">
                     <Info className="w-3 h-3" />
                     <span>Choose a dimension to reveal order options.</span>
                   </div>
+                ) : (
+                  <div className="space-y-8">
+                    <p className="text-[8px] font-bold text-muted uppercase tracking-[0.3em] text-center opacity-60">Initiate your order through your preferred channel</p>
+                    <div className="grid grid-cols-2 gap-12">
+                      <Button 
+                        onClick={handleOrderWhatsApp}
+                        className="h-14 rounded-2xl bg-[#25D366] text-white text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 hover:bg-[#128C7E] flex items-center justify-center gap-8 shadow-xl shadow-[#25D366]/10"
+                      >
+                        <Send className="w-4 h-4" /> WhatsApp
+                      </Button>
+                      <Button 
+                        onClick={handleOrderInstagram}
+                        variant="outline"
+                        className="h-14 rounded-2xl border-white/10 bg-white/5 text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 hover:bg-white/10 flex items-center justify-center gap-8"
+                      >
+                        <Instagram className="w-4 h-4" /> Instagram
+                      </Button>
+                    </div>
+                  </div>
                 )}
-                
-                <div className="grid grid-cols-2 gap-12">
-                  <Button 
-                    onClick={handleOrderWhatsApp}
-                    disabled={!selectedSize}
-                    className={cn(
-                      "h-14 rounded-2xl bg-[#25D366] text-white text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 hover:bg-[#128C7E] flex items-center justify-center gap-8 shadow-xl shadow-[#25D366]/10",
-                      !selectedSize && "opacity-20 grayscale pointer-events-none"
-                    )}
-                  >
-                    <Send className="w-4 h-4" /> WhatsApp
-                  </Button>
-                  <Button 
-                    onClick={handleOrderInstagram}
-                    disabled={!selectedSize}
-                    variant="outline"
-                    className={cn(
-                      "h-14 rounded-2xl border-white/10 bg-white/5 text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 hover:bg-white/10 flex items-center justify-center gap-8",
-                      !selectedSize && "opacity-20 grayscale pointer-events-none"
-                    )}
-                  >
-                    <Instagram className="w-4 h-4" /> Instagram
-                  </Button>
-                </div>
               </div>
             </div>
           </div>
