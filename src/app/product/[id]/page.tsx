@@ -7,14 +7,13 @@ import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
-import { Check, Info, Plus, Loader2, Instagram } from 'lucide-react'
+import { Check, Info, Plus, Loader2, Instagram, Send } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useToast } from '@/hooks/use-toast'
 import { useFirestore, useDoc, useMemoFirebase, useUser } from '@/firebase'
 import { doc, collection, query, where, getDocs } from 'firebase/firestore'
 import { Product, Coupon } from '@/lib/types'
 
-// Dummy product for testing purposes
 const DUMMY_JEANS: Product = {
   id: 'demo-jeans',
   name: 'Archival Raw Denim',
@@ -45,8 +44,6 @@ export default function ProductDetail() {
   }, [db, id])
 
   const { data: firestoreProduct, isLoading: productLoading } = useDoc<Product>(productRef)
-
-  // Use dummy product if ID matches
   const product = id === 'demo-jeans' ? DUMMY_JEANS : firestoreProduct
 
   const [selectedSize, setSelectedSize] = useState<string | null>(null)
@@ -84,11 +81,9 @@ export default function ProductDetail() {
 
   const handleApplyCoupon = async () => {
     if (!db) return
-    
     try {
       const q = query(collection(db, 'coupons'), where('code', '==', couponCode.toUpperCase()), where('isActive', '==', true))
       const snapshot = await getDocs(q)
-      
       if (!snapshot.empty) {
         const coupon = snapshot.docs[0].data() as Coupon
         let discount = 0
@@ -98,34 +93,18 @@ export default function ProductDetail() {
           discount = coupon.value
         }
         setAppliedCoupon({ code: coupon.code, discount })
-        toast({
-          title: "Coupon Applied",
-          description: `Successfully applied code ${coupon.code}`,
-        })
+        toast({ title: "Coupon Applied", description: `Successfully applied code ${coupon.code}` })
       } else {
-        toast({
-          variant: "destructive",
-          title: "Invalid Coupon",
-          description: "Code not recognized or expired.",
-        })
+        toast({ variant: "destructive", title: "Invalid Coupon", description: "Code not recognized or expired." })
       }
     } catch (err) {
       console.error(err)
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to validate coupon.",
-      })
+      toast({ variant: "destructive", title: "Error", description: "Failed to validate coupon." })
     }
   }
 
   const generateOrderMessage = () => {
-    return `Order for ${product.name}
-Size: ${selectedSize}
-Color: ${selectedColor}
-Price: NPR ${finalPrice.toLocaleString()}
-Coupon: ${appliedCoupon?.code || 'None'}
-URL: ${window.location.href}`
+    return `Order for ${product.name}\nSize: ${selectedSize}\nColor: ${selectedColor}\nPrice: NPR ${finalPrice.toLocaleString()}\nCoupon: ${appliedCoupon?.code || 'None'}\nURL: ${window.location.href}`
   }
 
   const handleOrderWhatsApp = () => {
@@ -138,36 +117,21 @@ URL: ${window.location.href}`
   const handleOrderInstagram = () => {
     if (!selectedSize) return
     const message = generateOrderMessage()
-
     navigator.clipboard.writeText(message).then(() => {
-      toast({
-        title: "Order Copied",
-        description: "Details copied to clipboard. Paste them in our Instagram DM.",
-      })
+      toast({ title: "Order Details Copied", description: "Details copied. Paste them in our Instagram DM." })
       window.open(`https://instagram.com/khoj_82`, '_blank')
     }).catch(() => {
-      toast({
-        variant: "destructive",
-        title: "Copy Failed",
-        description: "Please copy the details manually.",
-      })
+      toast({ variant: "destructive", title: "Copy Failed", description: "Please copy the details manually." })
     })
   }
 
-  const handleColorChange = (color: string) => {
-    setSelectedColor(color)
-    const colorIndex = product.colors.indexOf(color)
-    if (product.images[colorIndex]) {
-      setActiveImageIndex(colorIndex)
-    }
-  }
-
   return (
-    <div className="min-h-screen pb-32">
-      <main className="container mx-auto px-16 py-128">
-        <div className="grid md:grid-cols-2 gap-48 lg:gap-64">
+    <div className="min-h-screen pb-64">
+      <main className="container mx-auto px-16 py-96 md:py-160">
+        <div className="grid md:grid-cols-2 gap-32 lg:gap-64">
+          {/* Visuals Section */}
           <div className="space-y-16">
-            <div className="relative aspect-[4/5] rounded-xl overflow-hidden bg-secondary border border-white/5 shadow-2xl">
+            <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-secondary border border-white/5 shadow-2xl">
               <Image 
                 src={product.images[activeImageIndex] || product.images[0]} 
                 alt={product.name} 
@@ -177,58 +141,59 @@ URL: ${window.location.href}`
               />
               {id === 'demo-jeans' && (
                 <div className="absolute top-16 left-16 bg-accent text-background px-12 py-4 rounded-full text-[8px] font-black uppercase tracking-widest">
-                  Test Piece
+                  Demo Piece
                 </div>
               )}
             </div>
-            <div className="grid grid-cols-4 gap-12 md:gap-16">
+            <div className="grid grid-cols-4 gap-8 md:gap-12">
               {product.images.map((img, i) => (
                 <div 
                   key={i} 
                   onClick={() => setActiveImageIndex(i)}
                   className={cn(
                     "relative aspect-[4/5] rounded-lg overflow-hidden bg-secondary border cursor-pointer transition-all duration-300",
-                    activeImageIndex === i ? "border-accent scale-[0.98] ring-1 ring-accent" : "border-white/5 opacity-60 hover:opacity-100"
+                    activeImageIndex === i ? "border-accent scale-[0.98] ring-1 ring-accent" : "border-white/5 opacity-40 hover:opacity-100"
                   )}
                 >
-                  <Image src={img} alt={`${product.name} ${i}`} fill className="object-cover" />
+                  <Image src={img} alt={`${product.name} thumbnail ${i}`} fill className="object-cover" />
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="space-y-24">
-            <div className="space-y-12">
+          {/* Details Section */}
+          <div className="flex flex-col">
+            <div className="space-y-8 mb-24">
               <div className="flex items-center gap-12 text-[10px] font-bold uppercase tracking-[0.3em] text-accent">
-                <span>Khoj Originals</span>
+                <span>Khoj Studio</span>
                 <span className="w-1 h-1 rounded-full bg-accent/40" />
                 <span className="text-muted">{product.category}</span>
               </div>
-              <h1 className="text-4xl md:text-5xl font-bold tracking-tighter leading-tight">{product.name}</h1>
+              <h1 className="text-4xl md:text-6xl font-bold tracking-tighter leading-tight">{product.name}</h1>
               <div className="flex items-baseline gap-12">
                 <p className="text-3xl font-bold text-accent">NPR {finalPrice.toLocaleString()}</p>
                 {product.originalPrice && (
-                  <p className="text-lg text-muted line-through opacity-30">NPR {product.originalPrice.toLocaleString()}</p>
+                  <p className="text-lg text-muted line-through opacity-20">NPR {product.originalPrice.toLocaleString()}</p>
                 )}
               </div>
-              <p className="text-muted text-base leading-relaxed max-w-lg opacity-80">{product.description}</p>
+              <p className="text-muted text-sm md:text-base leading-relaxed max-w-lg opacity-70">{product.description}</p>
             </div>
 
-            <div className="space-y-24 pt-24 border-t border-white/5">
-              <div className="space-y-12">
+            <div className="space-y-16 py-16 border-t border-white/5">
+              <div className="space-y-8">
                 <div className="flex items-center justify-between">
-                  <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Dimensions</label>
-                  <button className="text-[10px] text-accent font-bold uppercase tracking-widest underline underline-offset-4 opacity-60 hover:opacity-100 transition-opacity">Sizing Chart</button>
+                  <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Dimension</label>
+                  <button className="text-[9px] text-accent font-bold uppercase tracking-widest underline underline-offset-4 opacity-40 hover:opacity-100 transition-opacity">Sizing Guide</button>
                 </div>
-                <div className="flex flex-wrap gap-8">
+                <div className="flex flex-wrap gap-6">
                   {product.sizes.map(size => (
                     <button
                       key={size}
                       onClick={() => setSelectedSize(size)}
                       className={cn(
-                        "h-10 min-w-[3rem] px-8 flex items-center justify-center rounded-lg border text-[11px] font-bold transition-all",
+                        "h-10 min-w-[3.5rem] px-12 flex items-center justify-center rounded-xl border text-[11px] font-bold transition-all",
                         selectedSize === size 
-                          ? "border-accent bg-accent text-background" 
+                          ? "border-accent bg-accent text-background shadow-lg shadow-accent/20" 
                           : "border-white/10 hover:border-white/30 bg-white/5"
                       )}
                     >
@@ -238,18 +203,18 @@ URL: ${window.location.href}`
                 </div>
               </div>
 
-              <div className="space-y-12">
+              <div className="space-y-8">
                 <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Palette</label>
                 <div className="flex flex-wrap gap-6">
                   {product.colors.map(color => (
                     <button
                       key={color}
-                      onClick={() => handleColorChange(color)}
+                      onClick={() => setSelectedColor(color)}
                       className={cn(
-                        "px-8 py-4 rounded-md border text-[8px] font-black uppercase tracking-[0.15em] transition-all",
+                        "px-10 py-4 rounded-lg border text-[9px] font-bold uppercase tracking-[0.1em] transition-all",
                         selectedColor === color 
-                          ? "border-accent bg-accent text-background" 
-                          : "border-white/10 hover:border-white/30 bg-white/5"
+                          ? "border-accent bg-accent/10 text-accent" 
+                          : "border-white/10 hover:border-white/30 bg-white/5 text-muted"
                       )}
                     >
                       {color}
@@ -259,25 +224,25 @@ URL: ${window.location.href}`
               </div>
             </div>
 
-            <div className="space-y-16">
+            <div className="pt-16 pb-24">
               {!showCouponInput ? (
                 <button 
                   onClick={() => setShowCouponInput(true)}
-                  className="text-[10px] font-bold text-accent hover:text-accent/80 transition-colors flex items-center gap-8 uppercase tracking-[0.3em] opacity-60 hover:opacity-100"
+                  className="text-[10px] font-bold text-accent hover:text-accent/80 transition-colors flex items-center gap-8 uppercase tracking-[0.3em] opacity-40 hover:opacity-100"
                 >
-                  <Plus className="w-3 h-3" /> Apply Coupon
+                  <Plus className="w-3 h-3" /> Add Coupon
                 </button>
               ) : (
-                <div className="space-y-8 animate-in fade-in slide-in-from-top-2 duration-300">
+                <div className="space-y-8 animate-in fade-in slide-in-from-top-2 duration-300 max-w-xs">
                   <div className="flex gap-8">
                     <Input 
-                      placeholder="ENTER CODE" 
-                      className="h-10 bg-white/5 border-white/10 text-center text-xs font-bold tracking-[0.2em] focus-visible:ring-accent rounded-lg" 
+                      placeholder="COUPON CODE" 
+                      className="h-10 bg-white/5 border-white/10 text-center text-[10px] font-bold tracking-[0.2em] focus-visible:ring-accent rounded-xl" 
                       value={couponCode}
                       onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
                     />
                     <Button 
-                      className="bg-accent text-background font-bold uppercase text-[9px] tracking-[0.2em] px-16 h-10 rounded-lg"
+                      className="bg-accent text-background font-bold uppercase text-[9px] tracking-[0.2em] px-16 h-10 rounded-xl shadow-lg shadow-accent/10"
                       onClick={handleApplyCoupon}
                     >
                       Apply
@@ -292,31 +257,32 @@ URL: ${window.location.href}`
               )}
             </div>
 
-            <div className="pt-16 space-y-16">
+            <div className="mt-auto pt-16 space-y-16">
               {!selectedSize && (
-                <div className="flex items-center gap-12 p-12 bg-white/5 rounded-lg text-[9px] text-muted uppercase tracking-[0.2em] font-bold border border-dashed border-white/10">
-                  <Info className="w-3 h-3 text-accent" />
-                  <span>Please choose a dimension to proceed.</span>
+                <div className="flex items-center gap-12 p-12 bg-accent/5 rounded-xl text-[9px] text-accent uppercase tracking-[0.2em] font-bold border border-accent/10">
+                  <Info className="w-3 h-3" />
+                  <span>Choose a dimension to reveal order options.</span>
                 </div>
               )}
+              
               <div className="grid grid-cols-2 gap-12">
                 <Button 
                   onClick={handleOrderWhatsApp}
                   disabled={!selectedSize}
                   className={cn(
-                    "w-full h-14 rounded-xl bg-[#25D366] text-white text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 hover:bg-[#128C7E]",
-                    !selectedSize && "opacity-30 grayscale cursor-not-allowed"
+                    "h-14 rounded-2xl bg-[#25D366] text-white text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 hover:bg-[#128C7E] flex items-center justify-center gap-8 shadow-xl shadow-[#25D366]/10",
+                    !selectedSize && "opacity-20 grayscale pointer-events-none"
                   )}
                 >
-                  WhatsApp
+                  <Send className="w-4 h-4" /> WhatsApp
                 </Button>
                 <Button 
                   onClick={handleOrderInstagram}
                   disabled={!selectedSize}
                   variant="outline"
                   className={cn(
-                    "w-full h-14 rounded-xl border-white/10 bg-transparent text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 hover:bg-white/5 flex items-center justify-center gap-8",
-                    !selectedSize && "opacity-30 grayscale cursor-not-allowed"
+                    "h-14 rounded-2xl border-white/10 bg-white/5 text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 hover:bg-white/10 flex items-center justify-center gap-8",
+                    !selectedSize && "opacity-20 grayscale pointer-events-none"
                   )}
                 >
                   <Instagram className="w-4 h-4" /> Instagram
@@ -327,23 +293,24 @@ URL: ${window.location.href}`
         </div>
       </main>
 
+      {/* Floating Action Bar for Mobile/Scroll */}
       <div className={cn(
-        "fixed bottom-0 left-0 right-0 z-50 premium-blur border-t border-white/5 p-12 transition-all duration-500 transform",
-        isScrolled ? "translate-y-0 opacity-100 shadow-[0_-20px_50px_rgba(0,0,0,0.5)]" : "translate-y-full opacity-0"
+        "fixed bottom-0 left-0 right-0 z-50 premium-blur border-t border-white/5 p-16 transition-all duration-500 transform",
+        isScrolled ? "translate-y-0 opacity-100 shadow-[0_-20px_60px_rgba(0,0,0,0.8)]" : "translate-y-full opacity-0"
       )}>
         <div className="container mx-auto max-w-4xl flex items-center justify-between gap-16">
           <div className="flex flex-col">
-            <span className="text-[9px] font-bold text-muted uppercase tracking-[0.2em]">Settlement</span>
+            <span className="text-[9px] font-bold text-muted uppercase tracking-[0.2em]">Price Total</span>
             <span className="text-2xl font-bold text-accent">NPR {finalPrice.toLocaleString()}</span>
           </div>
           <Button 
             onClick={handleOrderWhatsApp}
             className={cn(
-              "px-32 h-14 rounded-xl bg-primary text-background font-black uppercase tracking-[0.2em] text-[10px] transition-all duration-300",
+              "px-32 h-14 rounded-2xl bg-primary text-background font-black uppercase tracking-[0.2em] text-[10px] transition-all duration-300 shadow-xl",
               !selectedSize && "opacity-40"
             )}
           >
-            {selectedSize ? "Confirm Order" : "Select Dimension"}
+            {selectedSize ? "Order Now" : "Select Size"}
           </Button>
         </div>
       </div>
