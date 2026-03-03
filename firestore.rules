@@ -7,21 +7,19 @@ service cloud.firestore {
       return request.auth != null;
     }
 
-    // Products: Anyone can read and list, only signed-in admins can write
-    match /products/{productId} {
-      allow read, list: if true;
+    // Products, Posts, and Coupons: Publicly readable, admin writeable
+    match /products/{document=**} {
+      allow read: if true;
       allow write: if isSignedIn();
     }
 
-    // Posts: Anyone can read and list, only signed-in admins can write
-    match /posts/{postId} {
-      allow read, list: if true;
+    match /posts/{document=**} {
+      allow read: if true;
       allow write: if isSignedIn();
     }
 
-    // Coupons: Anyone can read and list (for validation), only signed-in admins can write
-    match /coupons/{couponId} {
-      allow read, list: if true;
+    match /coupons/{document=**} {
+      allow read: if true;
       allow write: if isSignedIn();
     }
 

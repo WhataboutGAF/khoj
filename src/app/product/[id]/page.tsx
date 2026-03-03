@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState, useMemo, useEffect } from 'react'
@@ -6,12 +7,31 @@ import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
-import { Check, Info, Plus, Loader2 } from 'lucide-react'
+import { Check, Info, Plus, Loader2, Instagram } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useToast } from '@/hooks/use-toast'
-import { useFirestore, useDoc, useCollection, useMemoFirebase } from '@/firebase'
+import { useFirestore, useDoc, useMemoFirebase } from '@/firebase'
 import { doc, collection, query, where, getDocs } from 'firebase/firestore'
 import { Product, Coupon } from '@/lib/types'
+
+// Dummy product for testing purposes
+const DUMMY_JEANS: Product = {
+  id: 'demo-jeans',
+  name: 'Archival Raw Denim',
+  description: 'A test piece crafted for functionality testing. Heavy-weight 14oz Japanese selvedge denim with a structured straight-leg silhouette.',
+  price: 4800,
+  originalPrice: 6200,
+  images: [
+    'https://picsum.photos/seed/denim1/800/1000',
+    'https://picsum.photos/seed/denim2/800/1000',
+    'https://picsum.photos/seed/denim3/800/1000'
+  ],
+  sizes: ['30', '32', '34', '36'],
+  colors: ['Indigo', 'Midnight Black'],
+  category: 'jeans',
+  isVisible: true,
+  createdAt: new Date().toISOString(),
+}
 
 export default function ProductDetail() {
   const { id } = useParams()
@@ -19,11 +39,14 @@ export default function ProductDetail() {
   const { toast } = useToast()
 
   const productRef = useMemoFirebase(() => {
-    if (!db || !id) return null
+    if (!db || !id || id === 'demo-jeans') return null
     return doc(db, 'products', id as string)
   }, [db, id])
 
-  const { data: product, isLoading: productLoading } = useDoc<Product>(productRef)
+  const { data: firestoreProduct, isLoading: productLoading } = useDoc<Product>(productRef)
+
+  // Use dummy product if ID matches or if firestore is loading/empty during dev
+  const product = id === 'demo-jeans' ? DUMMY_JEANS : firestoreProduct
 
   const [selectedSize, setSelectedSize] = useState<string | null>(null)
   const [selectedColor, setSelectedColor] = useState<string>('')
@@ -53,7 +76,7 @@ export default function ProductDetail() {
     return product.price - appliedCoupon.discount
   }, [product, appliedCoupon])
 
-  if (productLoading) return <div className="min-h-screen flex items-center justify-center"><Loader2 className="w-12 h-12 animate-spin text-accent" /></div>
+  if (productLoading && id !== 'demo-jeans') return <div className="min-h-screen flex items-center justify-center"><Loader2 className="w-12 h-12 animate-spin text-accent" /></div>
   if (!product) return <div className="min-h-screen flex items-center justify-center text-muted">Product not found</div>
 
   const handleApplyCoupon = async () => {
@@ -93,36 +116,38 @@ export default function ProductDetail() {
     }
   }
 
-  const handleOrderWhatsApp = () => {
-    if (!selectedSize) return
-
-    const message = `Order for ${product.name}
+  const generateOrderMessage = () => {
+    return `Order for ${product.name}
 Size: ${selectedSize}
 Color: ${selectedColor}
 Price: NPR ${finalPrice.toLocaleString()}
 Coupon: ${appliedCoupon?.code || 'None'}
 URL: ${window.location.href}`
+  }
 
+  const handleOrderWhatsApp = () => {
+    if (!selectedSize) return
+    const message = generateOrderMessage()
     const encodedMessage = encodeURIComponent(message)
     window.open(`https://wa.me/9779800000000?text=${encodedMessage}`, '_blank')
   }
 
   const handleOrderInstagram = () => {
     if (!selectedSize) return
-
-    const message = `Order for ${product.name}
-Size: ${selectedSize}
-Color: ${selectedColor}
-Price: NPR ${finalPrice.toLocaleString()}
-Coupon: ${appliedCoupon?.code || 'None'}
-URL: ${window.location.href}`
+    const message = generateOrderMessage()
 
     navigator.clipboard.writeText(message).then(() => {
       toast({
         title: "Order Copied",
-        description: "Message copied. Paste it into Instagram DM.",
+        description: "Details copied to clipboard. Paste them in our Instagram DM.",
       })
       window.open(`https://instagram.com/khoj_82`, '_blank')
+    }).catch(() => {
+      toast({
+        variant: "destructive",
+        title: "Copy Failed",
+        description: "Please copy the details manually.",
+      })
     })
   }
 
@@ -139,7 +164,7 @@ URL: ${window.location.href}`
       <main className="container mx-auto px-16 py-128">
         <div className="grid md:grid-cols-2 gap-48 lg:gap-64">
           <div className="space-y-16">
-            <div className="relative aspect-[4/5] rounded-xl overflow-hidden bg-secondary border border-white/5">
+            <div className="relative aspect-[4/5] rounded-xl overflow-hidden bg-secondary border border-white/5 shadow-2xl">
               <Image 
                 src={product.images[activeImageIndex] || product.images[0]} 
                 alt={product.name} 
@@ -147,6 +172,11 @@ URL: ${window.location.href}`
                 className="object-cover transition-all duration-700"
                 priority
               />
+              {id === 'demo-jeans' && (
+                <div className="absolute top-16 left-16 bg-accent text-background px-12 py-4 rounded-full text-[8px] font-black uppercase tracking-widest">
+                  Test Piece
+                </div>
+              )}
             </div>
             <div className="grid grid-cols-4 gap-12 md:gap-16">
               {product.images.map((img, i) => (
@@ -282,11 +312,11 @@ URL: ${window.location.href}`
                   disabled={!selectedSize}
                   variant="outline"
                   className={cn(
-                    "w-full h-16 rounded-2xl border-white/10 bg-transparent text-sm font-black uppercase tracking-[0.3em] transition-all duration-500 hover:bg-white/5",
+                    "w-full h-16 rounded-2xl border-white/10 bg-transparent text-sm font-black uppercase tracking-[0.3em] transition-all duration-500 hover:bg-white/5 flex items-center gap-12",
                     !selectedSize && "opacity-30 grayscale cursor-not-allowed"
                   )}
                 >
-                  Order via Instagram
+                  <Instagram className="w-5 h-5" /> Order via Instagram
                 </Button>
               </div>
             </div>

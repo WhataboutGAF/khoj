@@ -1,8 +1,9 @@
+
 "use client"
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowRight, Loader2 } from 'lucide-react'
+import { ArrowRight, Loader2, Instagram } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ProductCard } from '@/components/ProductCard'
 import { PlaceHolderImages } from '@/lib/placeholder-images'
@@ -52,8 +53,8 @@ export default function Home() {
                   <Button asChild className="bg-accent text-[#0B0D12] hover:bg-accent/90 px-32 h-14 min-w-[140px] rounded-xl font-bold transition-all hover:scale-[1.02] shadow-2xl shadow-accent/20">
                     <Link href="/shop">Shop</Link>
                   </Button>
-                  <Link href="/collections" className="group flex items-center gap-8 text-sm font-bold text-foreground hover:text-accent transition-colors">
-                    View collection <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-4" />
+                  <Link href="/product/demo-jeans" className="group flex items-center gap-8 text-sm font-bold text-foreground hover:text-accent transition-colors">
+                    Test Order Flow <Instagram className="w-4 h-4 transition-transform group-hover:scale-110" />
                   </Link>
                 </div>
               </div>
@@ -97,9 +98,12 @@ export default function Home() {
               ))}
             </div>
           ) : (
-            <div className="col-span-full py-64 text-center border border-dashed border-white/10 rounded-xl">
-              <h3 className="text-xl font-bold mb-4">New pieces soon.</h3>
-              <p className="text-muted text-sm">We’re preparing the next drop.</p>
+            <div className="col-span-full py-64 text-center border border-dashed border-white/10 rounded-xl bg-card/10">
+              <h3 className="text-xl font-bold mb-8">New pieces soon.</h3>
+              <p className="text-muted text-sm mb-24">We’re preparing the next drop.</p>
+              <Button asChild variant="outline" className="rounded-xl border-white/10 text-[10px] font-bold uppercase tracking-widest h-12">
+                <Link href="/product/demo-jeans">View Demo Piece</Link>
+              </Button>
             </div>
           )}
         </section>
