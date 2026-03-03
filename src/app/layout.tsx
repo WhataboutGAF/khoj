@@ -34,6 +34,7 @@ export default function RootLayout({
             <Footer />
           </div>
           <Toaster />
+          <SpeedInsights />
         </FirebaseClientProvider>
         <SpeedInsights />
       </body>
