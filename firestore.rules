@@ -1,38 +1,32 @@
-
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-
+    // Helper to check if user is signed in
     function isSignedIn() {
       return request.auth != null;
     }
 
-    // For the prototype, we treat any signed-in user as an admin 
-    // if they've come through the vault. 
-    function isAdmin() {
-      return isSignedIn();
-    }
-
-    match /roles_admin/{userId} {
-      allow get: if isSignedIn() && (request.auth.uid == userId || isAdmin());
-      allow list: if isAdmin();
-      allow create, update, delete: if isAdmin();
-    }
-
+    // Products: Anyone can read, only signed-in admins can write
     match /products/{productId} {
-      allow get, list: if true;
-      allow create, update, delete: if isAdmin();
+      allow read: if true;
+      allow write: if isSignedIn();
     }
 
+    // Posts: Anyone can read, only signed-in admins can write
     match /posts/{postId} {
-      allow list: if isAdmin() || resource.data.published == true;
-      allow get: if isAdmin() || resource.data.published == true;
-      allow create, update, delete: if isAdmin();
+      allow read: if true;
+      allow write: if isSignedIn();
     }
 
+    // Coupons: Anyone can read (for checkout), only signed-in admins can write
     match /coupons/{couponId} {
-      allow get: if true;
-      allow list, create, update, delete: if isAdmin();
+      allow read: if true;
+      allow write: if isSignedIn();
+    }
+
+    // Admin Roles: Only signed-in users can access their own role record
+    match /roles_admin/{userId} {
+      allow read, write: if isSignedIn() && request.auth.uid == userId;
     }
   }
 }

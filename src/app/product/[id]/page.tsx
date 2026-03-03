@@ -1,29 +1,43 @@
-
 "use client"
 
 import { useState, useMemo, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import Image from 'next/image'
-import { PRODUCTS, COUPONS } from '@/lib/mock-data'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
-import { Check, Info, Plus } from 'lucide-react'
+import { Check, Info, Plus, Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useToast } from '@/hooks/use-toast'
+import { useFirestore, useDoc, useCollection, useMemoFirebase } from '@/firebase'
+import { doc, collection, query, where, getDocs } from 'firebase/firestore'
+import { Product, Coupon } from '@/lib/types'
 
 export default function ProductDetail() {
   const { id } = useParams()
-  const product = PRODUCTS.find(p => p.id === id)
+  const db = useFirestore()
   const { toast } = useToast()
 
+  const productRef = useMemoFirebase(() => {
+    if (!db || !id) return null
+    return doc(db, 'products', id as string)
+  }, [db, id])
+
+  const { data: product, isLoading: productLoading } = useDoc<Product>(productRef)
+
   const [selectedSize, setSelectedSize] = useState<string | null>(null)
-  const [selectedColor, setSelectedColor] = useState<string>(product?.colors[0] || '')
+  const [selectedColor, setSelectedColor] = useState<string>('')
   const [activeImageIndex, setActiveImageIndex] = useState(0)
   const [showCouponInput, setShowCouponInput] = useState(false)
   const [couponCode, setCouponCode] = useState('')
   const [appliedCoupon, setAppliedCoupon] = useState<{code: string, discount: number} | null>(null)
   const [isScrolled, setIsScrolled] = useState(false)
+
+  useEffect(() => {
+    if (product?.colors?.length > 0) {
+      setSelectedColor(product.colors[0])
+    }
+  }, [product])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -39,32 +53,47 @@ export default function ProductDetail() {
     return product.price - appliedCoupon.discount
   }, [product, appliedCoupon])
 
+  if (productLoading) return <div className="min-h-screen flex items-center justify-center"><Loader2 className="w-12 h-12 animate-spin text-accent" /></div>
   if (!product) return <div className="min-h-screen flex items-center justify-center text-muted">Product not found</div>
 
-  const handleApplyCoupon = () => {
-    const coupon = COUPONS.find(c => c.code.toUpperCase() === couponCode.toUpperCase() && c.isActive)
-    if (coupon) {
-      let discount = 0
-      if (coupon.type === 'percent') {
-        discount = (product.price * coupon.value) / 100
+  const handleApplyCoupon = async () => {
+    if (!db) return
+    
+    try {
+      const q = query(collection(db, 'coupons'), where('code', '==', couponCode.toUpperCase()), where('isActive', '==', true))
+      const snapshot = await getDocs(q)
+      
+      if (!snapshot.empty) {
+        const coupon = snapshot.docs[0].data() as Coupon
+        let discount = 0
+        if (coupon.type === 'percent') {
+          discount = (product.price * coupon.value) / 100
+        } else {
+          discount = coupon.value
+        }
+        setAppliedCoupon({ code: coupon.code, discount })
+        toast({
+          title: "Coupon Applied",
+          description: `Successfully applied code ${coupon.code}`,
+        })
       } else {
-        discount = coupon.value
+        toast({
+          variant: "destructive",
+          title: "Invalid Coupon",
+          description: "Code not recognized or expired.",
+        })
       }
-      setAppliedCoupon({ code: coupon.code, discount })
-      toast({
-        title: "Coupon Applied",
-        description: `Successfully applied code ${coupon.code}`,
-      })
-    } else {
+    } catch (err) {
+      console.error(err)
       toast({
         variant: "destructive",
-        title: "Invalid Coupon",
-        description: "Code not recognized.",
+        title: "Error",
+        description: "Failed to validate coupon.",
       })
     }
   }
 
-  const handleOrder = () => {
+  const handleOrderWhatsApp = () => {
     if (!selectedSize) return
 
     const message = `Order for ${product.name}
@@ -76,6 +105,25 @@ URL: ${window.location.href}`
 
     const encodedMessage = encodeURIComponent(message)
     window.open(`https://wa.me/9779800000000?text=${encodedMessage}`, '_blank')
+  }
+
+  const handleOrderInstagram = () => {
+    if (!selectedSize) return
+
+    const message = `Order for ${product.name}
+Size: ${selectedSize}
+Color: ${selectedColor}
+Price: NPR ${finalPrice.toLocaleString()}
+Coupon: ${appliedCoupon?.code || 'None'}
+URL: ${window.location.href}`
+
+    navigator.clipboard.writeText(message).then(() => {
+      toast({
+        title: "Order Copied",
+        description: "Message copied. Paste it into Instagram DM.",
+      })
+      window.open(`https://instagram.com/khoj_82`, '_blank')
+    })
   }
 
   const handleColorChange = (color: string) => {
@@ -211,23 +259,36 @@ URL: ${window.location.href}`
               )}
             </div>
 
-            <div className="hidden md:block pt-32 space-y-24">
+            <div className="pt-32 space-y-24">
               {!selectedSize && (
                 <div className="flex items-center gap-12 p-16 bg-white/5 rounded-xl text-[10px] text-muted uppercase tracking-[0.2em] font-bold border border-dashed border-white/10">
                   <Info className="w-4 h-4 text-accent" />
                   <span>Please choose a dimension to proceed.</span>
                 </div>
               )}
-              <Button 
-                onClick={handleOrder}
-                disabled={!selectedSize}
-                className={cn(
-                  "w-full h-16 rounded-2xl bg-primary text-background text-sm font-black uppercase tracking-[0.3em] transition-all duration-500",
-                  !selectedSize ? "opacity-30 grayscale cursor-not-allowed" : "hover:scale-[1.01] active:scale-[0.98] shadow-2xl shadow-accent/20"
-                )}
-              >
-                Order via WhatsApp
-              </Button>
+              <div className="grid gap-16">
+                <Button 
+                  onClick={handleOrderWhatsApp}
+                  disabled={!selectedSize}
+                  className={cn(
+                    "w-full h-16 rounded-2xl bg-[#25D366] text-white text-sm font-black uppercase tracking-[0.3em] transition-all duration-500 hover:bg-[#128C7E]",
+                    !selectedSize && "opacity-30 grayscale cursor-not-allowed"
+                  )}
+                >
+                  Order via WhatsApp
+                </Button>
+                <Button 
+                  onClick={handleOrderInstagram}
+                  disabled={!selectedSize}
+                  variant="outline"
+                  className={cn(
+                    "w-full h-16 rounded-2xl border-white/10 bg-transparent text-sm font-black uppercase tracking-[0.3em] transition-all duration-500 hover:bg-white/5",
+                    !selectedSize && "opacity-30 grayscale cursor-not-allowed"
+                  )}
+                >
+                  Order via Instagram
+                </Button>
+              </div>
             </div>
           </div>
         </div>
@@ -243,7 +304,7 @@ URL: ${window.location.href}`
             <span className="text-3xl font-bold text-accent">NPR {finalPrice.toLocaleString()}</span>
           </div>
           <Button 
-            onClick={handleOrder}
+            onClick={handleOrderWhatsApp}
             className={cn(
               "px-40 h-16 rounded-2xl bg-primary text-background font-black uppercase tracking-[0.2em] text-[11px] transition-all duration-500",
               !selectedSize && "opacity-40"

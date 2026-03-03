@@ -1,19 +1,28 @@
-
 "use client"
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ProductCard } from '@/components/ProductCard'
-import { PRODUCTS } from '@/lib/mock-data'
 import { PlaceHolderImages } from '@/lib/placeholder-images'
+import { useFirestore, useCollection, useMemoFirebase } from '@/firebase'
+import { collection, query, orderBy, limit } from 'firebase/firestore'
+import { Product } from '@/lib/types'
 
 export default function Home() {
-  // Enforce denim-only categories for public UI
-  const denimProducts = PRODUCTS.filter(p => 
+  const db = useFirestore()
+  
+  const productsQuery = useMemoFirebase(() => {
+    if (!db) return null
+    return query(collection(db, 'products'), orderBy('createdAt', 'desc'))
+  }, [db])
+
+  const { data: products, isLoading } = useCollection<Product>(productsQuery)
+  
+  const featuredProducts = products?.filter(p => 
     ['jeans', 'shorts', 'pants'].includes(p.category.toLowerCase()) && p.isVisible
-  ).slice(0, 4)
+  ).slice(0, 4) || []
   
   const modelImage = PlaceHolderImages.find(img => img.id === 'model-denim')?.imageUrl || ''
 
@@ -22,12 +31,10 @@ export default function Home() {
       <main>
         {/* Hero Section */}
         <section className="relative min-h-[80vh] flex items-start overflow-visible pt-160 pb-160 bg-[#0B0D12]">
-          {/* Background Radial Gradient behind model */}
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_40%,rgba(17,21,34,1)_0%,rgba(11,13,18,1)_100%)] -z-10" />
           
           <div className="container mx-auto px-16 relative z-20">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-24 h-full">
-              {/* Left Content: 6 Columns */}
               <div className="col-span-1 md:col-span-6 space-y-32 relative z-30">
                 <div className="space-y-12">
                   <span className="text-xs font-semibold tracking-[0.2em] text-muted uppercase block">
@@ -51,7 +58,6 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Right Content: 6 Columns (Model Image) */}
               <div className="hidden md:block col-span-6 relative z-10">
                 <div className="absolute top-0 right-0 w-[110%] h-[120%] -mr-48">
                   <Image
@@ -62,7 +68,6 @@ export default function Home() {
                     priority
                     data-ai-hint="denim fashion"
                   />
-                  {/* Subtle Grounding Shadow */}
                   <div className="absolute bottom-[20%] left-1/2 -translate-x-1/2 w-1/2 h-48 bg-black/40 blur-[120px] rounded-full -z-10" />
                 </div>
               </div>
@@ -81,18 +86,22 @@ export default function Home() {
             </div>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-24">
-            {denimProducts.length > 0 ? (
-              denimProducts.map((product) => (
+          {isLoading ? (
+            <div className="flex justify-center py-64">
+              <Loader2 className="w-12 h-12 animate-spin text-accent" />
+            </div>
+          ) : featuredProducts.length > 0 ? (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-24">
+              {featuredProducts.map((product) => (
                 <ProductCard key={product.id} product={product} />
-              ))
-            ) : (
-              <div className="col-span-full py-64 text-center border border-dashed border-white/10 rounded-xl">
-                <h3 className="text-xl font-bold mb-4">New pieces soon.</h3>
-                <p className="text-muted text-sm">We’re preparing the next drop.</p>
-              </div>
-            )}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="col-span-full py-64 text-center border border-dashed border-white/10 rounded-xl">
+              <h3 className="text-xl font-bold mb-4">New pieces soon.</h3>
+              <p className="text-muted text-sm">We’re preparing the next drop.</p>
+            </div>
+          )}
         </section>
       </main>
     </div>
