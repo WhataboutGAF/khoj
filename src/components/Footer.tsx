@@ -26,6 +26,7 @@ export function Footer() {
             <li><Link href="/shop" className="text-muted hover:text-accent transition-colors">Catalogue</Link></li>
             <li><Link href="/collections" className="text-muted hover:text-accent transition-colors">Archives</Link></li>
             <li><Link href="/journal" className="text-muted hover:text-accent transition-colors">Journal</Link></li>
+            <li><Link href="/justvibing" className="text-muted/40 hover:text-accent transition-colors text-[10px] uppercase tracking-widest">Staff Access</Link></li>
           </ul>
         </div>
 
