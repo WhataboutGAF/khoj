@@ -4,7 +4,6 @@ import { Toaster } from "@/components/ui/toaster"
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { FirebaseClientProvider } from '@/firebase';
-import { SpeedInsights } from '@vercel/speed-insights/next';
 
 export const metadata: Metadata = {
   title: 'KHOJ | Premium Essentials',
@@ -35,7 +34,6 @@ export default function RootLayout({
           </div>
           <Toaster />
         </FirebaseClientProvider>
-        <SpeedInsights />
       </body>
     </html>
   );

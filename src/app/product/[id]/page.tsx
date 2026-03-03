@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState, useMemo, useEffect } from 'react'
@@ -179,19 +178,19 @@ export default function ProductDetail() {
               <p className="text-muted text-sm md:text-base leading-relaxed max-w-lg opacity-70">{product.description}</p>
             </div>
 
-            <div className="space-y-12 py-12 border-t border-white/5">
-              <div className="space-y-6">
+            <div className="space-y-8 py-8 border-t border-white/5">
+              <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Dimension</label>
                   <button className="text-[9px] text-accent font-bold uppercase tracking-widest underline underline-offset-4 opacity-40 hover:opacity-100 transition-opacity">Sizing Guide</button>
                 </div>
-                <div className="flex flex-wrap gap-6">
+                <div className="flex flex-wrap gap-4">
                   {product.sizes.map(size => (
                     <button
                       key={size}
                       onClick={() => setSelectedSize(size)}
                       className={cn(
-                        "h-10 min-w-[3.5rem] px-12 flex items-center justify-center rounded-xl border text-[11px] font-bold transition-all",
+                        "h-10 min-w-[3.5rem] px-10 flex items-center justify-center rounded-xl border text-[11px] font-bold transition-all",
                         selectedSize === size 
                           ? "border-accent bg-accent text-background shadow-lg shadow-accent/20" 
                           : "border-white/10 hover:border-white/30 bg-white/5"
@@ -203,9 +202,9 @@ export default function ProductDetail() {
                 </div>
               </div>
 
-              <div className="space-y-6">
+              <div className="space-y-4">
                 <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Palette</label>
-                <div className="flex flex-wrap gap-6">
+                <div className="flex flex-wrap gap-4">
                   {product.colors.map(color => (
                     <button
                       key={color}
@@ -224,7 +223,7 @@ export default function ProductDetail() {
               </div>
             </div>
 
-            <div className="pt-8 pb-16">
+            <div className="py-4">
               {!showCouponInput ? (
                 <button 
                   onClick={() => setShowCouponInput(true)}
