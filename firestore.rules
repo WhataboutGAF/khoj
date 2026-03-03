@@ -7,9 +7,7 @@ service cloud.firestore {
       return request.auth != null;
     }
 
-    // Public Collections: Allow anyone to read (get and list)
-    // Admin only for write operations
-    
+    // Explicitly allow public reading (get and list) for catalog collections
     match /products/{productId} {
       allow read: if true;
       allow write: if isSignedIn();
@@ -30,7 +28,7 @@ service cloud.firestore {
       allow read, write: if isSignedIn() && request.auth.uid == userId;
     }
 
-    // Global recursive read fallback for public collections
+    // Global recursive read fallback for public collections to ensure listing works
     match /{path=**}/products/{doc} { allow read: if true; }
     match /{path=**}/posts/{doc} { allow read: if true; }
     match /{path=**}/coupons/{doc} { allow read: if true; }

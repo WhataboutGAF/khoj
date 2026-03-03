@@ -163,13 +163,13 @@ export default function ProductDetail() {
 
           {/* Details Section */}
           <div className="flex flex-col">
-            <div className="space-y-8 mb-24">
+            <div className="space-y-6 mb-16">
               <div className="flex items-center gap-12 text-[10px] font-bold uppercase tracking-[0.3em] text-accent">
                 <span>Khoj Studio</span>
                 <span className="w-1 h-1 rounded-full bg-accent/40" />
                 <span className="text-muted">{product.category}</span>
               </div>
-              <h1 className="text-4xl md:text-6xl font-bold tracking-tighter leading-tight">{product.name}</h1>
+              <h1 className="text-4xl md:text-5xl font-bold tracking-tighter leading-tight">{product.name}</h1>
               <div className="flex items-baseline gap-12">
                 <p className="text-3xl font-bold text-accent">NPR {finalPrice.toLocaleString()}</p>
                 {product.originalPrice && (
@@ -179,8 +179,8 @@ export default function ProductDetail() {
               <p className="text-muted text-sm md:text-base leading-relaxed max-w-lg opacity-70">{product.description}</p>
             </div>
 
-            <div className="space-y-16 py-16 border-t border-white/5">
-              <div className="space-y-8">
+            <div className="space-y-12 py-12 border-t border-white/5">
+              <div className="space-y-6">
                 <div className="flex items-center justify-between">
                   <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Dimension</label>
                   <button className="text-[9px] text-accent font-bold uppercase tracking-widest underline underline-offset-4 opacity-40 hover:opacity-100 transition-opacity">Sizing Guide</button>
@@ -203,7 +203,7 @@ export default function ProductDetail() {
                 </div>
               </div>
 
-              <div className="space-y-8">
+              <div className="space-y-6">
                 <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Palette</label>
                 <div className="flex flex-wrap gap-6">
                   {product.colors.map(color => (
@@ -224,7 +224,7 @@ export default function ProductDetail() {
               </div>
             </div>
 
-            <div className="pt-16 pb-24">
+            <div className="pt-8 pb-16">
               {!showCouponInput ? (
                 <button 
                   onClick={() => setShowCouponInput(true)}
@@ -233,7 +233,7 @@ export default function ProductDetail() {
                   <Plus className="w-3 h-3" /> Add Coupon
                 </button>
               ) : (
-                <div className="space-y-8 animate-in fade-in slide-in-from-top-2 duration-300 max-w-xs">
+                <div className="space-y-6 animate-in fade-in slide-in-from-top-2 duration-300 max-w-xs">
                   <div className="flex gap-8">
                     <Input 
                       placeholder="COUPON CODE" 
@@ -257,9 +257,9 @@ export default function ProductDetail() {
               )}
             </div>
 
-            <div className="mt-auto pt-16 space-y-16">
+            <div className="mt-auto pt-8 space-y-12">
               {!selectedSize && (
-                <div className="flex items-center gap-12 p-12 bg-accent/5 rounded-xl text-[9px] text-accent uppercase tracking-[0.2em] font-bold border border-accent/10">
+                <div className="flex items-center gap-12 p-10 bg-accent/5 rounded-xl text-[9px] text-accent uppercase tracking-[0.2em] font-bold border border-accent/10">
                   <Info className="w-3 h-3" />
                   <span>Choose a dimension to reveal order options.</span>
                 </div>
