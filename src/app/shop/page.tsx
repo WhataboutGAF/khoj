@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState, useMemo, Suspense } from 'react'
@@ -24,7 +25,6 @@ function ShopContent() {
   const queryParam = searchParams.get('q') || ''
   const [activeTab, setActiveTab] = useState('all')
   
-  // Filter States
   const [sortBy, setSortBy] = useState('Latest')
   const [availability, setAvailability] = useState<'all' | 'in-stock'>('all')
   const [isOpen, setIsOpen] = useState(false)
@@ -46,7 +46,7 @@ function ShopContent() {
         p.name.toLowerCase().includes(queryParam.toLowerCase()) || 
         p.description.toLowerCase().includes(queryParam.toLowerCase())
       
-      const isPublic = p.isVisible && ['jeans', 'shorts', 'pants'].includes(p.category.toLowerCase())
+      const isPublic = p.isVisible
       const matchesAvailability = availability === 'all' || p.isVisible
 
       return matchesCategory && matchesSearch && isPublic && matchesAvailability
