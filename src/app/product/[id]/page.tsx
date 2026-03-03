@@ -197,25 +197,25 @@ URL: ${window.location.href}`
             </div>
           </div>
 
-          <div className="space-y-32">
-            <div className="space-y-16">
+          <div className="space-y-24">
+            <div className="space-y-12">
               <div className="flex items-center gap-12 text-[10px] font-bold uppercase tracking-[0.3em] text-accent">
                 <span>Khoj Originals</span>
                 <span className="w-1 h-1 rounded-full bg-accent/40" />
                 <span className="text-muted">{product.category}</span>
               </div>
-              <h1 className="text-4xl md:text-6xl font-bold tracking-tighter leading-[1.1]">{product.name}</h1>
-              <div className="flex items-baseline gap-16">
-                <p className="text-4xl font-bold text-accent">NPR {finalPrice.toLocaleString()}</p>
+              <h1 className="text-4xl md:text-5xl font-bold tracking-tighter leading-tight">{product.name}</h1>
+              <div className="flex items-baseline gap-12">
+                <p className="text-3xl font-bold text-accent">NPR {finalPrice.toLocaleString()}</p>
                 {product.originalPrice && (
-                  <p className="text-xl text-muted line-through opacity-30">NPR {product.originalPrice.toLocaleString()}</p>
+                  <p className="text-lg text-muted line-through opacity-30">NPR {product.originalPrice.toLocaleString()}</p>
                 )}
               </div>
-              <p className="text-muted text-lg leading-relaxed max-w-lg font-medium opacity-80">{product.description}</p>
+              <p className="text-muted text-base leading-relaxed max-w-lg opacity-80">{product.description}</p>
             </div>
 
-            <div className="space-y-40 pt-40 border-t border-white/5">
-              <div className="space-y-20">
+            <div className="space-y-24 pt-24 border-t border-white/5">
+              <div className="space-y-12">
                 <div className="flex items-center justify-between">
                   <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Dimensions</label>
                   <button className="text-[10px] text-accent font-bold uppercase tracking-widest underline underline-offset-4 opacity-60 hover:opacity-100 transition-opacity">Sizing Chart</button>
@@ -226,9 +226,9 @@ URL: ${window.location.href}`
                       key={size}
                       onClick={() => setSelectedSize(size)}
                       className={cn(
-                        "h-12 min-w-[3.5rem] px-12 flex items-center justify-center rounded-xl border text-[11px] font-bold transition-all",
+                        "h-10 min-w-[3rem] px-8 flex items-center justify-center rounded-lg border text-[11px] font-bold transition-all",
                         selectedSize === size 
-                          ? "border-accent bg-accent text-background shadow-xl shadow-accent/20" 
+                          ? "border-accent bg-accent text-background" 
                           : "border-white/10 hover:border-white/30 bg-white/5"
                       )}
                     >
@@ -238,7 +238,7 @@ URL: ${window.location.href}`
                 </div>
               </div>
 
-              <div className="space-y-20">
+              <div className="space-y-12">
                 <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Palette</label>
                 <div className="flex flex-wrap gap-6">
                   {product.colors.map(color => (
@@ -246,9 +246,9 @@ URL: ${window.location.href}`
                       key={color}
                       onClick={() => handleColorChange(color)}
                       className={cn(
-                        "px-10 py-5 rounded-lg border text-[8px] font-black uppercase tracking-[0.15em] transition-all",
+                        "px-8 py-4 rounded-md border text-[8px] font-black uppercase tracking-[0.15em] transition-all",
                         selectedColor === color 
-                          ? "border-accent bg-accent text-background shadow-lg shadow-accent/10" 
+                          ? "border-accent bg-accent text-background" 
                           : "border-white/10 hover:border-white/30 bg-white/5"
                       )}
                     >
@@ -259,67 +259,67 @@ URL: ${window.location.href}`
               </div>
             </div>
 
-            <div className="space-y-20">
+            <div className="space-y-16">
               {!showCouponInput ? (
                 <button 
                   onClick={() => setShowCouponInput(true)}
                   className="text-[10px] font-bold text-accent hover:text-accent/80 transition-colors flex items-center gap-8 uppercase tracking-[0.3em] opacity-60 hover:opacity-100"
                 >
-                  <Plus className="w-3 h-3" /> Insert Code
+                  <Plus className="w-3 h-3" /> Apply Coupon
                 </button>
               ) : (
-                <div className="space-y-16 animate-in fade-in slide-in-from-top-4 duration-500">
+                <div className="space-y-8 animate-in fade-in slide-in-from-top-2 duration-300">
                   <div className="flex gap-8">
                     <Input 
                       placeholder="ENTER CODE" 
-                      className="h-14 bg-white/5 border-white/10 text-center text-sm font-bold tracking-[0.2em] focus-visible:ring-accent rounded-xl" 
+                      className="h-10 bg-white/5 border-white/10 text-center text-xs font-bold tracking-[0.2em] focus-visible:ring-accent rounded-lg" 
                       value={couponCode}
                       onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
                     />
                     <Button 
-                      className="bg-accent text-background font-bold uppercase text-[10px] tracking-[0.2em] px-24 h-14 rounded-xl shadow-xl shadow-accent/10"
+                      className="bg-accent text-background font-bold uppercase text-[9px] tracking-[0.2em] px-16 h-10 rounded-lg"
                       onClick={handleApplyCoupon}
                     >
                       Apply
                     </Button>
                   </div>
                   {appliedCoupon && (
-                    <p className="text-[10px] font-bold text-accent flex items-center gap-8 uppercase tracking-[0.2em]">
-                      <Check className="w-4 h-4" /> Code {appliedCoupon.code} confirmed.
+                    <p className="text-[9px] font-bold text-accent flex items-center gap-6 uppercase tracking-[0.2em]">
+                      <Check className="w-3 h-3" /> Code {appliedCoupon.code} confirmed.
                     </p>
                   )}
                 </div>
               )}
             </div>
 
-            <div className="pt-32 space-y-24">
+            <div className="pt-16 space-y-16">
               {!selectedSize && (
-                <div className="flex items-center gap-12 p-16 bg-white/5 rounded-xl text-[10px] text-muted uppercase tracking-[0.2em] font-bold border border-dashed border-white/10">
-                  <Info className="w-4 h-4 text-accent" />
+                <div className="flex items-center gap-12 p-12 bg-white/5 rounded-lg text-[9px] text-muted uppercase tracking-[0.2em] font-bold border border-dashed border-white/10">
+                  <Info className="w-3 h-3 text-accent" />
                   <span>Please choose a dimension to proceed.</span>
                 </div>
               )}
-              <div className="grid gap-16">
+              <div className="grid grid-cols-2 gap-12">
                 <Button 
                   onClick={handleOrderWhatsApp}
                   disabled={!selectedSize}
                   className={cn(
-                    "w-full h-16 rounded-2xl bg-[#25D366] text-white text-sm font-black uppercase tracking-[0.3em] transition-all duration-500 hover:bg-[#128C7E]",
+                    "w-full h-14 rounded-xl bg-[#25D366] text-white text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 hover:bg-[#128C7E]",
                     !selectedSize && "opacity-30 grayscale cursor-not-allowed"
                   )}
                 >
-                  Order via WhatsApp
+                  WhatsApp
                 </Button>
                 <Button 
                   onClick={handleOrderInstagram}
                   disabled={!selectedSize}
                   variant="outline"
                   className={cn(
-                    "w-full h-16 rounded-2xl border-white/10 bg-transparent text-sm font-black uppercase tracking-[0.3em] transition-all duration-500 hover:bg-white/5 flex items-center gap-12",
+                    "w-full h-14 rounded-xl border-white/10 bg-transparent text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 hover:bg-white/5 flex items-center justify-center gap-8",
                     !selectedSize && "opacity-30 grayscale cursor-not-allowed"
                   )}
                 >
-                  <Instagram className="w-5 h-5" /> Order via Instagram
+                  <Instagram className="w-4 h-4" /> Instagram
                 </Button>
               </div>
             </div>
@@ -328,18 +328,18 @@ URL: ${window.location.href}`
       </main>
 
       <div className={cn(
-        "fixed bottom-0 left-0 right-0 z-50 premium-blur border-t border-white/5 p-16 transition-all duration-700 transform",
+        "fixed bottom-0 left-0 right-0 z-50 premium-blur border-t border-white/5 p-12 transition-all duration-500 transform",
         isScrolled ? "translate-y-0 opacity-100 shadow-[0_-20px_50px_rgba(0,0,0,0.5)]" : "translate-y-full opacity-0"
       )}>
-        <div className="container mx-auto max-w-4xl flex items-center justify-between gap-24">
+        <div className="container mx-auto max-w-4xl flex items-center justify-between gap-16">
           <div className="flex flex-col">
-            <span className="text-[10px] font-bold text-muted uppercase tracking-[0.2em]">Settlement</span>
-            <span className="text-3xl font-bold text-accent">NPR {finalPrice.toLocaleString()}</span>
+            <span className="text-[9px] font-bold text-muted uppercase tracking-[0.2em]">Settlement</span>
+            <span className="text-2xl font-bold text-accent">NPR {finalPrice.toLocaleString()}</span>
           </div>
           <Button 
             onClick={handleOrderWhatsApp}
             className={cn(
-              "px-40 h-16 rounded-2xl bg-primary text-background font-black uppercase tracking-[0.2em] text-[11px] transition-all duration-500",
+              "px-32 h-14 rounded-xl bg-primary text-background font-black uppercase tracking-[0.2em] text-[10px] transition-all duration-300",
               !selectedSize && "opacity-40"
             )}
           >
