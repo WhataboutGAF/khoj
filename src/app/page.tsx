@@ -7,12 +7,13 @@ import { ArrowRight, Loader2, Instagram } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ProductCard } from '@/components/ProductCard'
 import { PlaceHolderImages } from '@/lib/placeholder-images'
-import { useFirestore, useCollection, useMemoFirebase } from '@/firebase'
+import { useFirestore, useCollection, useMemoFirebase, useUser } from '@/firebase'
 import { collection, query, orderBy, limit } from 'firebase/firestore'
 import { Product } from '@/lib/types'
 
 export default function Home() {
   const db = useFirestore()
+  const { isUserLoading } = useUser()
   
   const productsQuery = useMemoFirebase(() => {
     if (!db) return null
@@ -21,8 +22,11 @@ export default function Home() {
 
   const { data: products, isLoading } = useCollection<Product>(productsQuery)
   
+  // Wait for auth state to prevent transient permission errors even for public reads
+  const showLoading = isUserLoading || isLoading
+
   const featuredProducts = products?.filter(p => 
-    ['jeans', 'shorts', 'pants'].includes(p.category.toLowerCase()) && p.isVisible
+    p.isVisible
   ).slice(0, 4) || []
   
   const modelImage = PlaceHolderImages.find(img => img.id === 'model-denim')?.imageUrl || ''
@@ -87,7 +91,7 @@ export default function Home() {
             </div>
           </div>
           
-          {isLoading ? (
+          {showLoading ? (
             <div className="flex justify-center py-64">
               <Loader2 className="w-12 h-12 animate-spin text-accent" />
             </div>

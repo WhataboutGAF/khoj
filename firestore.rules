@@ -7,18 +7,20 @@ service cloud.firestore {
       return request.auth != null;
     }
 
-    // Products, Posts, and Coupons: Publicly readable, admin writeable
-    match /products/{document=**} {
+    // Products: Publicly readable (list and get), admin writeable
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if isSignedIn();
+    }
+    
+    // Coupons: Publicly readable (required for checkout validation), admin writeable
+    match /coupons/{couponId} {
       allow read: if true;
       allow write: if isSignedIn();
     }
 
-    match /posts/{document=**} {
-      allow read: if true;
-      allow write: if isSignedIn();
-    }
-
-    match /coupons/{document=**} {
+    // Posts (Journal): Publicly readable, admin writeable
+    match /posts/{postId} {
       allow read: if true;
       allow write: if isSignedIn();
     }
@@ -27,5 +29,10 @@ service cloud.firestore {
     match /roles_admin/{userId} {
       allow read, write: if isSignedIn() && request.auth.uid == userId;
     }
+
+    // Allow recursive read for all subcollections under these main entities
+    match /{path=**}/products/{doc} { allow read: if true; }
+    match /{path=**}/posts/{doc} { allow read: if true; }
+    match /{path=**}/coupons/{doc} { allow read: if true; }
   }
 }

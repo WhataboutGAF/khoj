@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Check, Info, Plus, Loader2, Instagram } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useToast } from '@/hooks/use-toast'
-import { useFirestore, useDoc, useMemoFirebase } from '@/firebase'
+import { useFirestore, useDoc, useMemoFirebase, useUser } from '@/firebase'
 import { doc, collection, query, where, getDocs } from 'firebase/firestore'
 import { Product, Coupon } from '@/lib/types'
 
@@ -37,6 +37,7 @@ export default function ProductDetail() {
   const { id } = useParams()
   const db = useFirestore()
   const { toast } = useToast()
+  const { isUserLoading } = useUser()
 
   const productRef = useMemoFirebase(() => {
     if (!db || !id || id === 'demo-jeans') return null
@@ -45,7 +46,7 @@ export default function ProductDetail() {
 
   const { data: firestoreProduct, isLoading: productLoading } = useDoc<Product>(productRef)
 
-  // Use dummy product if ID matches or if firestore is loading/empty during dev
+  // Use dummy product if ID matches
   const product = id === 'demo-jeans' ? DUMMY_JEANS : firestoreProduct
 
   const [selectedSize, setSelectedSize] = useState<string | null>(null)
@@ -76,7 +77,9 @@ export default function ProductDetail() {
     return product.price - appliedCoupon.discount
   }, [product, appliedCoupon])
 
-  if (productLoading && id !== 'demo-jeans') return <div className="min-h-screen flex items-center justify-center"><Loader2 className="w-12 h-12 animate-spin text-accent" /></div>
+  const showLoading = (productLoading && id !== 'demo-jeans') || isUserLoading
+
+  if (showLoading) return <div className="min-h-screen flex items-center justify-center"><Loader2 className="w-12 h-12 animate-spin text-accent" /></div>
   if (!product) return <div className="min-h-screen flex items-center justify-center text-muted">Product not found</div>
 
   const handleApplyCoupon = async () => {

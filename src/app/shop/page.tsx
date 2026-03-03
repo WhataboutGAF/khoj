@@ -8,7 +8,7 @@ import { COLLECTIONS } from '@/lib/mock-data'
 import { SlidersHorizontal, SearchX, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import { useFirestore, useCollection, useMemoFirebase } from '@/firebase'
+import { useFirestore, useCollection, useMemoFirebase, useUser } from '@/firebase'
 import { collection, query, orderBy } from 'firebase/firestore'
 import { Product } from '@/lib/types'
 import {
@@ -30,6 +30,8 @@ function ShopContent() {
   const [isOpen, setIsOpen] = useState(false)
 
   const db = useFirestore()
+  const { isUserLoading } = useUser()
+
   const productsQuery = useMemoFirebase(() => {
     if (!db) return null
     return query(collection(db, 'products'), orderBy('createdAt', 'desc'))
@@ -60,6 +62,8 @@ function ShopContent() {
 
     return result
   }, [products, activeTab, queryParam, sortBy, availability])
+
+  const showLoading = isUserLoading || isLoading
 
   return (
     <main className="container mx-auto px-16 py-[128px]">
@@ -155,7 +159,7 @@ function ShopContent() {
         </div>
       </div>
 
-      {isLoading ? (
+      {showLoading ? (
         <div className="flex justify-center py-[128px]">
           <Loader2 className="w-12 h-12 animate-spin text-accent" />
         </div>
